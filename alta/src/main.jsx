@@ -339,7 +339,7 @@ function Rail({ title, children, reason, showAction = true, onAction }) {
   );
 }
 
-function CatalogView({ title, items, open, close, collection, onUpdate, onDelete, onFeedback }) {
+function CatalogView({ title, items, open, close, collection, filterable = false, onUpdate, onDelete, onFeedback }) {
   const shared = collection?.type === "Compartilhada";
   const memberCount = collection?.members?.length ?? 1;
   const [editingName, setEditingName] = useState(false);
@@ -377,8 +377,9 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
     setNewMember("");
   };
   const genreOf = (item) => item.meta?.split(" · ")[0] ?? "Outros";
-  const genres = collection ? [...new Set(items.map(genreOf))] : [];
-  const filters = collection ? [
+  const filteringEnabled = Boolean(collection || filterable);
+  const genres = filteringEnabled ? [...new Set(items.map(genreOf))] : [];
+  const filters = filteringEnabled ? [
     { label: "Todos", count: items.length },
     ...genres.map((genre) => ({ label: genre, count: items.filter((item) => genreOf(item) === genre).length })),
     { label: "Avaliados", count: items.filter((item) => item.rating).length },
@@ -437,7 +438,7 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
           ) : null}
         />
       </div>
-      {collection ? (
+      {filteringEnabled ? (
         <div className="catalog-tools">
           <label className="catalog-search">
             <Search aria-hidden="true" />
@@ -457,7 +458,7 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
           <Poster key={`${item.name}-${index}`} title={item} onOpen={open} />
         ))}
       </div>
-      {collection && visibleItems.length === 0 ? (
+      {filteringEnabled && visibleItems.length === 0 ? (
         <div className="catalog-empty">
           <Search aria-hidden="true" />
           <strong>Nenhum título encontrado</strong>
@@ -1034,7 +1035,7 @@ function StorePage({ open, onDepthChange }) {
 
 function ProfilePage({ open, onDepthChange }) {
   const [historyFilter, setHistoryFilter] = useState("Todos");
-  const [favoriteFilter, setFavoriteFilter] = useState("Todos");
+  const [viewingFavorites, setViewingFavorites] = useState(false);
   const [shareTitle, setShareTitle] = useState(null);
   const [lists, setLists] = useState([
     { id: "watch", name: "Quero assistir", type: "Privada", count: 12, items: catalog.slice(0, 6) },
@@ -1067,6 +1068,17 @@ function ProfilePage({ open, onDepthChange }) {
       />
     );
   }
+  if (viewingFavorites) {
+    return (
+      <CatalogView
+        title="Favoritos"
+        items={titles}
+        open={open}
+        filterable
+        close={() => { setViewingFavorites(false); onDepthChange(false); }}
+      />
+    );
+  }
   return (
     <main className="page-pad profile-page">
       <div className="profile-head">
@@ -1078,14 +1090,10 @@ function ProfilePage({ open, onDepthChange }) {
       </div>
 
       <section className="rail-section favorite-rail">
-        <SectionHeader size="compact" title="Favoritos" actionLabel="Ver todos" />
-        <ChipRow className="profile-chips">
-          <Chip count={3} active={favoriteFilter === "Todos"} onClick={() => setFavoriteFilter("Todos")}>Todos</Chip>
-          <Chip count={2} active={favoriteFilter === "Avaliados"} onClick={() => setFavoriteFilter("Avaliados")}>Avaliados</Chip>
-        </ChipRow>
+        <SectionHeader size="compact" title="Favoritos" actionLabel="Ver todos" onAction={() => { setViewingFavorites(true); onDepthChange(true); }} />
         <ScrollArea orientation="horizontal" className="rail-scroll">
           <div className="rail">
-            {titles.filter((title) => favoriteFilter === "Todos" || title.rating).slice(0, 3).map((title, index) => (
+            {titles.slice(0, 3).map((title, index) => (
               <QuickRecommendationCard
                 key={title.name}
                 density="compact"
