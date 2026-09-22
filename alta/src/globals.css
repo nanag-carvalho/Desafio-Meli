@@ -1,0 +1,216 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@theme inline {
+  --font-sans: "Manrope", sans-serif;
+  --font-heading: "Manrope", sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 999px;
+  --radius-navigation: 24px;
+  --radius-navigation-item: 18px;
+}
+
+:root {
+  color-scheme: dark;
+  --background: #0b0d11;
+  --foreground: #f5f7fa;
+  --radius-navigation: 24px;
+  --radius-navigation-item: 18px;
+  --card: #181d23;
+  --card-foreground: #f5f7fa;
+  --popover: #222933;
+  --popover-foreground: #f5f7fa;
+  --primary: #ffe600;
+  --primary-foreground: #111318;
+  --secondary: #222933;
+  --secondary-foreground: #f5f7fa;
+  --muted: #2d333d;
+  --muted-foreground: #a8b0ba;
+  --accent: #3483fa;
+  --accent-foreground: #fff;
+  --destructive: #ff5b6b;
+  --border: #22272e;
+  --input: #222933;
+  --ring: #3483fa;
+  --success: #2dc383;
+  --warning: #ff7733;
+  --radius: 12px;
+  --glass-background: rgba(18, 22, 28, 0.76);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 20px;
+  --shadow-raised: 0 12px 32px rgba(0, 0, 0, 0.28);
+  --shadow-overlay: 0 24px 64px rgba(0, 0, 0, 0.48);
+  /* Typography — exact mirror of local Figma text styles */
+  --type-display-size: 32px;
+  --type-display-line: 38px;
+  --type-display-weight: 800;
+  --type-display-tracking: -1px;
+  --type-h1-size: 24px;
+  --type-h1-line: 30px;
+  --type-h1-weight: 800;
+  --type-h1-tracking: -0.01em;
+  --type-h2-size: 20px;
+  --type-h2-line: 26px;
+  --type-h2-weight: 700;
+  --type-h2-tracking: -0.005em;
+  --type-h3-size: 18px;
+  --type-h3-line: 24px;
+  --type-h3-weight: 600;
+  --type-h3-tracking: 0;
+  --type-h4-size: 16px;
+  --type-h4-line: 20px;
+  --type-h4-weight: 600;
+  --type-h4-tracking: 0;
+  --type-body-size: 14px;
+  --type-body-line: 20px;
+  --type-body-weight: 400;
+  --type-body-tracking: 0;
+  --type-body-lead-size: 16px;
+  --type-body-lead-line: 24px;
+  --type-body-lead-weight: 400;
+  --type-body-lead-tracking: 0;
+  --type-body-emphasis-size: 14px;
+  --type-body-emphasis-line: 20px;
+  --type-body-emphasis-weight: 500;
+  --type-body-emphasis-tracking: 0;
+  --type-label-small-size: 12px;
+  --type-label-small-line: 18px;
+  --type-label-small-weight: 600;
+  --type-label-small-tracking: 0;
+  --type-label-muted-size: 12px;
+  --type-label-muted-line: 18px;
+  --type-label-muted-weight: 400;
+  --type-label-muted-tracking: 0;
+  --type-label-caption-size: 10px;
+  --type-label-caption-line: 14px;
+  --type-label-caption-weight: 500;
+  --type-label-caption-tracking: 0;
+  --size-control-sm: 36px;
+  --size-control-md: 40px;
+  --size-control-lg: 40px;
+  --size-field: 40px;
+  --size-navigation: 64px;
+  --size-media-card-poster: 176px;
+  --size-media-card-poster-art: 218px;
+  --size-media-card-ranking: 176px;
+  --size-media-card-landscape: 290px;
+  --size-media-card-landscape-art: 160px;
+  --type-rank-size: 96px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  .type-display {
+    font-size: var(--type-display-size);
+    line-height: var(--type-display-line);
+    font-weight: var(--type-display-weight);
+    letter-spacing: var(--type-display-tracking);
+  }
+  .type-h1 {
+    font-size: var(--type-h1-size);
+    line-height: var(--type-h1-line);
+    font-weight: var(--type-h1-weight);
+    letter-spacing: var(--type-h1-tracking);
+  }
+  .type-h2 {
+    font-size: var(--type-h2-size);
+    line-height: var(--type-h2-line);
+    font-weight: var(--type-h2-weight);
+    letter-spacing: var(--type-h2-tracking);
+  }
+  .type-h3 {
+    font-size: var(--type-h3-size);
+    line-height: var(--type-h3-line);
+    font-weight: var(--type-h3-weight);
+    letter-spacing: var(--type-h3-tracking);
+  }
+  .type-h4 {
+    font-size: var(--type-h4-size);
+    line-height: var(--type-h4-line);
+    font-weight: var(--type-h4-weight);
+    letter-spacing: var(--type-h4-tracking);
+  }
+  .type-body {
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-line);
+    font-weight: var(--type-body-weight);
+    letter-spacing: var(--type-body-tracking);
+  }
+  .type-body-lead {
+    font-size: var(--type-body-lead-size);
+    line-height: var(--type-body-lead-line);
+    font-weight: var(--type-body-lead-weight);
+    letter-spacing: var(--type-body-lead-tracking);
+  }
+  .type-body-emphasis {
+    font-size: var(--type-body-emphasis-size);
+    line-height: var(--type-body-emphasis-line);
+    font-weight: var(--type-body-emphasis-weight);
+    letter-spacing: var(--type-body-emphasis-tracking);
+  }
+  .type-label-small {
+    font-size: var(--type-label-small-size);
+    line-height: var(--type-label-small-line);
+    font-weight: var(--type-label-small-weight);
+    letter-spacing: var(--type-label-small-tracking);
+  }
+  .type-label-muted {
+    font-size: var(--type-label-muted-size);
+    line-height: var(--type-label-muted-line);
+    font-weight: var(--type-label-muted-weight);
+    letter-spacing: var(--type-label-muted-tracking);
+  }
+  .type-label-caption {
+    font-size: var(--type-label-caption-size);
+    line-height: var(--type-label-caption-line);
+    font-weight: var(--type-label-caption-weight);
+    letter-spacing: var(--type-label-caption-tracking);
+  }
+}

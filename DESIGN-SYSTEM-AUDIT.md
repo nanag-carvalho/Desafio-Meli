@@ -1,0 +1,22 @@
+# Auditoria de uso do Design System
+
+## Corrigido
+
+- A experiência passou a importar a biblioteca por um único barrel: `@/design-system`.
+- Removidos adaptadores locais de Button, Badge, Chip e IconButton.
+- Criar lista agora usa Sheet, SheetHeader, SheetTitle, SheetDescription, Input, Item selecionável e SheetFooter.
+- Adicionar à lista usa OptionsSheet, Item e IconButton do DS.
+- Indicar usa ShareSheet e ActionTile do DS.
+- Favoritos usa QuickRecommendationCard.
+- Cabeçalho de catálogo usa AppHeader.
+- Cabeçalhos de seção usam SectionHeader, incluindo ação customizada.
+
+## Ainda fora do DS
+
+- CommerceSheet mantém shell e controles locais por ter fluxo em múltiplas etapas.
+- Indicador de páginas do Em cena é específico do player e ainda está na experiência.
+- Layout estrutural de hero, catálogo e detalhe continua sendo composição de tela, como esperado.
+
+## Próxima consolidação
+
+Transformar CommerceSheet em `PurchaseSheet` dentro de compositions, usando Sheet, Item, Button e estados padronizados.
