@@ -484,19 +484,26 @@
   width: 100%;
 }
 .media-player-variants {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 180px;
   align-items: flex-start;
   gap: var(--space-4);
-  width: max-content;
+  width: 100%;
   padding-bottom: var(--space-3);
 }
 .media-player-demo {
-  width: min(100%, 520px);
+  width: 100%;
+  min-width: 0;
 }
 .media-player-scene-demo {
   width: 180px;
   flex: none;
   border-radius: var(--radius-xl);
+}
+@media (max-width: 720px) {
+  .media-player-variants {
+    grid-template-columns: 1fr;
+  }
 }
 .ds-field {
   min-height: 40px;
