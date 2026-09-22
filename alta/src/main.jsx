@@ -452,17 +452,10 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
           <Sheet open={managingMembers} onOpenChange={setManagingMembers}>
             <SheetContent side="bottom" portalContainer={document.querySelector(".device")}>
               <SheetHeader>
-                <SheetTitle>Participantes</SheetTitle>
-                <SheetDescription>Quem participa pode adicionar e remover títulos.</SheetDescription>
+                <SheetTitle>Compartilhar lista</SheetTitle>
+                <SheetDescription>Convide pessoas diretamente ou envie um link.</SheetDescription>
               </SheetHeader>
               <div className="member-manager">
-                <div className="participant-strip" aria-label="Participantes da lista">
-                  {(collection.members ?? ["NC"]).map((member, index) => (
-                    <motion.div key={`${member}-${index}`} layout initial={{ opacity: 0, scale: 0.88 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.88 }}>
-                      <ParticipantAvatar initials={member} label={member === "NC" ? "Você" : member} owner={index === 0} onRemove={index === 0 ? undefined : () => applyUpdate({ ...collection, members: collection.members.filter((_, memberIndex) => memberIndex !== index) }, `${member} removido`)} />
-                    </motion.div>
-                  ))}
-                </div>
                 <SectionHeader title="Convidar pessoas" />
                 <InviteField aria-label="Nome ou e-mail" placeholder="Nome ou e-mail" value={newMember} onChange={(event) => setNewMember(event.target.value)} onInvite={addMember} />
                 <Item
@@ -474,6 +467,14 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
                 <Button variant="link" icon={Share2} className="w-fit px-0" onClick={shareInvite}>
                   Compartilhar link
                 </Button>
+                <SectionHeader title="Participantes" />
+                <div className="participant-strip" aria-label="Participantes da lista">
+                  {(collection.members ?? ["NC"]).map((member, index) => (
+                    <motion.div key={`${member}-${index}`} layout initial={{ opacity: 0, scale: 0.88 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.88 }}>
+                      <ParticipantAvatar initials={member} label={member === "NC" ? "Você" : member} owner={index === 0} onRemove={index === 0 ? undefined : () => applyUpdate({ ...collection, members: collection.members.filter((_, memberIndex) => memberIndex !== index) }, `${member} removido`)} />
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </SheetContent>
           </Sheet>
