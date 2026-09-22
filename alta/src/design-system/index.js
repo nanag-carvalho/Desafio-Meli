@@ -1,6 +1,7 @@
 export { ActionTile } from "@/components/compositions/action-tile";
 export { AppHeader } from "@/components/compositions/app-header";
 export { InviteField } from "@/components/compositions/invite-field";
+export { ParticipantAvatar } from "@/components/compositions/participant-avatar";
 export { BottomNavigationItem } from "@/components/compositions/bottom-navigation-item";
 export { MediaCard } from "@/components/compositions/media-card";
 export { MediaPlayer } from "@/components/compositions/media-player";
@@ -11,6 +12,7 @@ export { SectionHeader } from "@/components/compositions/section-header";
 export { ShareSheet } from "@/components/compositions/share-sheet";
 
 export { Badge } from "@/components/ui/badge";
+export { Avatar } from "@/components/ui/avatar";
 export { Button } from "@/components/ui/button";
 export { Chip } from "@/components/ui/chip";
 export { IconButton } from "@/components/ui/icon-button";

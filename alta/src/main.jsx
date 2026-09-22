@@ -48,6 +48,7 @@ import {
   MediaCard,
   MediaPlayer,
   OptionsSheet,
+  ParticipantAvatar,
   QuickRecommendationCard,
   RatingAction,
   ScrollArea,
@@ -455,27 +456,24 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
                 <SheetDescription>Quem participa pode adicionar e remover títulos.</SheetDescription>
               </SheetHeader>
               <div className="member-manager">
-                {(collection.members ?? ["NC"]).map((member, index) => (
-                  <motion.div key={`${member}-${index}`} layout initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
-                    <Item title={member === "NC" ? "Você" : member} supporting={index === 0 ? "Proprietária" : "Colaborador"} trailing={index === 0 ? <span /> : <IconButton label={`Remover ${member}`} onClick={() => applyUpdate({ ...collection, members: collection.members.filter((_, memberIndex) => memberIndex !== index) }, `${member} removido`)}><X /></IconButton>} />
-                  </motion.div>
-                ))}
-                <div className="member-invite-block">
-                  <strong>Convidar diretamente</strong>
-                  <InviteField aria-label="Nome ou e-mail" placeholder="Nome ou e-mail" value={newMember} onChange={(event) => setNewMember(event.target.value)} onInvite={addMember} />
-                  <small>Pressione enviar ou Enter para adicionar.</small>
+                <div className="participant-strip" aria-label="Participantes da lista">
+                  {(collection.members ?? ["NC"]).map((member, index) => (
+                    <motion.div key={`${member}-${index}`} layout initial={{ opacity: 0, scale: 0.88 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.88 }}>
+                      <ParticipantAvatar initials={member} label={member === "NC" ? "Você" : member} owner={index === 0} onRemove={index === 0 ? undefined : () => applyUpdate({ ...collection, members: collection.members.filter((_, memberIndex) => memberIndex !== index) }, `${member} removido`)} />
+                    </motion.div>
+                  ))}
                 </div>
-                <div className="invite-link-block">
-                  <div>
-                    <Link2 aria-hidden="true" />
-                    <span><strong>Link de convite</strong><small>Quem receber pode entrar nesta lista.</small></span>
-                  </div>
-                  <code>{inviteUrl}</code>
-                  <div className="invite-link-actions">
-                    <Button variant="secondary" icon={inviteCopied ? Check : Copy} onClick={copyInvite}>{inviteCopied ? "Link copiado" : "Copiar link"}</Button>
-                    <Button variant="outline" icon={Share2} onClick={shareInvite}>Compartilhar</Button>
-                  </div>
-                </div>
+                <SectionHeader title="Convidar pessoas" />
+                <InviteField aria-label="Nome ou e-mail" placeholder="Nome ou e-mail" value={newMember} onChange={(event) => setNewMember(event.target.value)} onInvite={addMember} />
+                <Item
+                  icon={Link2}
+                  title="Link de convite"
+                  supporting={inviteCopied ? "Link copiado" : inviteUrl}
+                  trailing={<IconButton label="Copiar link" onClick={copyInvite}>{inviteCopied ? <Check /> : <Copy />}</IconButton>}
+                />
+                <Button variant="link" icon={Share2} className="w-fit px-0" onClick={shareInvite}>
+                  Compartilhar link
+                </Button>
               </div>
             </SheetContent>
           </Sheet>

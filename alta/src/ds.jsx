@@ -60,6 +60,8 @@ import { OptionsSheet } from "@/components/compositions/options-sheet";
 import { ShareSheet } from "@/components/compositions/share-sheet";
 import { SectionHeader } from "@/components/compositions/section-header";
 import { QuickRecommendationCard } from "@/components/compositions/quick-recommendation-card";
+import { Avatar } from "@/components/ui/avatar";
+import { ParticipantAvatar } from "@/components/compositions/participant-avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import "./globals.css";
@@ -1056,6 +1058,16 @@ function Catalog() {
               supporting="3 participantes"
               trailing={<Users />}
             />
+            <Item
+              variant="plain"
+              title="Participante"
+              supporting="Variante para listas dentro de sheets"
+            />
+            <div className="flex items-start gap-4">
+              <Avatar initials="NC" />
+              <ParticipantAvatar initials="NC" label="Você" owner />
+              <ParticipantAvatar initials="RA" label="RA" onRemove={() => {}} />
+            </div>
             <Item
               selectable
               title="Drama"
