@@ -29,8 +29,6 @@ import {
   ArrowLeft,
   Pencil,
   Trash2,
-  Link2,
-  Copy,
 } from "lucide-react";
 import "./globals.css";
 import "./styles.css";
@@ -54,6 +52,7 @@ import {
   ScrollArea,
   SectionHeader,
   ShareSheet as DSShareSheet,
+  ShareChannels,
   Sheet,
   SheetContent,
   SheetDescription,
@@ -458,15 +457,8 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
               <div className="member-manager">
                 <SectionHeader title="Convidar pessoas" />
                 <InviteField aria-label="Nome ou e-mail" placeholder="Nome ou e-mail" value={newMember} onChange={(event) => setNewMember(event.target.value)} onInvite={addMember} />
-                <Item
-                  icon={Link2}
-                  title="Link de convite"
-                  supporting={inviteCopied ? "Link copiado" : inviteUrl}
-                  trailing={<IconButton label="Copiar link" onClick={copyInvite}>{inviteCopied ? <Check /> : <Copy />}</IconButton>}
-                />
-                <Button variant="link" icon={Share2} className="w-fit px-0" onClick={shareInvite}>
-                  Compartilhar link
-                </Button>
+                <SectionHeader title="Compartilhar convite" />
+                <ShareChannels copied={inviteCopied} onSelect={(channel) => channel === "copy" ? copyInvite() : shareInvite()} />
                 <SectionHeader title="Participantes" />
                 <div className="participant-strip" aria-label="Participantes da lista">
                   {(collection.members ?? ["NC"]).map((member, index) => (

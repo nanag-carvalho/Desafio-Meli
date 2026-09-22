@@ -1,12 +1,7 @@
 import * as React from "react";
-import {
-  Ellipsis,
-  Instagram,
-  Link2,
-  MessageCircle,
-  Share2,
-} from "lucide-react";
+import { Share2 } from "lucide-react";
 import { ActionTile } from "@/components/compositions/action-tile";
+import { ShareChannels } from "@/components/compositions/share-channels";
 import {
   Sheet,
   SheetContent,
@@ -30,29 +25,6 @@ function ShareSheet({
   const portalContainer = withinContext
     ? document.querySelector(".device")
     : undefined;
-  const channels = [
-    {
-      value: "whatsapp",
-      icon: MessageCircle,
-      label: "WhatsApp",
-    },
-    {
-      value: "instagram",
-      icon: Instagram,
-      label: "Instagram",
-    },
-    {
-      value: "copy",
-      icon: Link2,
-      label: "Copiar link",
-    },
-    {
-      value: "more",
-      icon: Ellipsis,
-      label: "Mais",
-    },
-  ];
-
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       {trigger !== null ? (
@@ -83,17 +55,7 @@ function ShareSheet({
             </small>
           </span>
         </div>
-        <div className="grid grid-cols-4 gap-2 px-4 pt-1">
-          {channels.map((channel) => (
-            <ActionTile
-              key={channel.value}
-              icon={channel.icon}
-              label={channel.label}
-              variant="surface"
-              className="min-w-0 px-1"
-            />
-          ))}
-        </div>
+        <ShareChannels className="px-4 pt-1" />
       </SheetContent>
     </Sheet>
   );

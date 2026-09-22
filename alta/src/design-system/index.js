@@ -10,6 +10,7 @@ export { QuickRecommendationCard } from "@/components/compositions/quick-recomme
 export { RatingAction } from "@/components/compositions/rating-action";
 export { SectionHeader } from "@/components/compositions/section-header";
 export { ShareSheet } from "@/components/compositions/share-sheet";
+export { ShareChannels } from "@/components/compositions/share-channels";
 
 export { Badge } from "@/components/ui/badge";
 export { Avatar } from "@/components/ui/avatar";
