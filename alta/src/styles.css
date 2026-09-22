@@ -957,12 +957,58 @@ nav button[data-active] {
   gap: var(--space-2);
   padding: 0 var(--space-4) var(--space-4);
 }
-.member-invite-row {
+.member-invite-block {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
   gap: var(--space-2);
-  margin-top: var(--space-2);
+  margin-top: var(--space-3);
+}
+.member-invite-block > strong,
+.invite-link-block strong {
+  font-size: var(--type-body-emphasis-size);
+  line-height: var(--type-body-emphasis-line);
+  font-weight: var(--type-body-emphasis-weight);
+}
+.member-invite-block > small,
+.invite-link-block small {
+  color: var(--muted-foreground);
+  font-size: var(--type-label-small-size);
+  line-height: var(--type-label-small-line);
+}
+.invite-link-block {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+.invite-link-block > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.invite-link-block > div:first-child > svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--muted-foreground);
+}
+.invite-link-block > div:first-child > span { display: grid; gap: var(--space-1); }
+.invite-link-block code {
+  overflow: hidden;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background);
+  color: var(--muted-foreground);
+  font-size: var(--type-label-small-size);
+  line-height: var(--type-label-small-line);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.invite-link-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
 }
 .collection-members span {
   width: 28px;

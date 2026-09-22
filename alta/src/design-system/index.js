@@ -1,5 +1,6 @@
 export { ActionTile } from "@/components/compositions/action-tile";
 export { AppHeader } from "@/components/compositions/app-header";
+export { InviteField } from "@/components/compositions/invite-field";
 export { BottomNavigationItem } from "@/components/compositions/bottom-navigation-item";
 export { MediaCard } from "@/components/compositions/media-card";
 export { MediaPlayer } from "@/components/compositions/media-player";

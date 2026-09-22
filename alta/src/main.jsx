@@ -29,6 +29,8 @@ import {
   ArrowLeft,
   Pencil,
   Trash2,
+  Link2,
+  Copy,
 } from "lucide-react";
 import "./globals.css";
 import "./styles.css";
@@ -41,6 +43,7 @@ import {
   Chip,
   IconButton,
   Input,
+  InviteField,
   Item,
   MediaCard,
   MediaPlayer,
@@ -337,6 +340,26 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [draftName, setDraftName] = useState(title);
   const [newMember, setNewMember] = useState("");
+  const [inviteCopied, setInviteCopied] = useState(false);
+  const inviteUrl = "mercadoplay.com/lista/convite-7f2a";
+  const copyInvite = async () => {
+    await navigator.clipboard?.writeText(`https://${inviteUrl}`);
+    setInviteCopied(true);
+    window.setTimeout(() => setInviteCopied(false), 1800);
+  };
+  const shareInvite = async () => {
+    if (navigator.share) {
+      await navigator.share({ title: `Entre na lista ${title}`, url: `https://${inviteUrl}` });
+    } else {
+      await copyInvite();
+    }
+  };
+  const addMember = () => {
+    if (!newMember.trim()) return;
+    const initials = newMember.trim().split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
+    onUpdate?.({ ...collection, members: [...(collection.members ?? ["NC"]), initials] });
+    setNewMember("");
+  };
   const supporting = collection ? (
     <span className="catalog-supporting">
       <span>{items.length} títulos</span>
@@ -394,7 +417,7 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
       {collection ? (
         <>
           <Sheet open={editingName} onOpenChange={setEditingName}>
-            <SheetContent side="bottom" portalContainer={document.querySelector(".device")} className="mx-auto max-w-[420px] rounded-t-2xl border border-b-0 border-border bg-popover">
+            <SheetContent side="bottom" portalContainer={document.querySelector(".device")} className="mx-auto max-w-[420px] rounded-t-2xl border border-b-0 border-border bg-popover pb-[max(var(--space-6),env(safe-area-inset-bottom))]">
               <SheetHeader>
                 <SheetTitle>Editar nome</SheetTitle>
                 <SheetDescription>Use um nome curto que explique o objetivo da lista.</SheetDescription>
@@ -415,9 +438,21 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
                 {(collection.members ?? ["NC"]).map((member, index) => (
                   <Item key={`${member}-${index}`} title={member === "NC" ? "Você" : member} supporting={index === 0 ? "Proprietária" : "Colaborador"} trailing={index === 0 ? <span /> : <IconButton label={`Remover ${member}`} onClick={() => onUpdate?.({ ...collection, members: collection.members.filter((_, memberIndex) => memberIndex !== index) })}><X /></IconButton>} />
                 ))}
-                <div className="member-invite-row">
-                  <Input aria-label="Nome ou e-mail" placeholder="Nome ou e-mail" value={newMember} onChange={(event) => setNewMember(event.target.value)} />
-                  <Button disabled={!newMember.trim()} onClick={() => { const initials = newMember.trim().split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase(); onUpdate?.({ ...collection, members: [...(collection.members ?? ["NC"]), initials] }); setNewMember(""); }}>Adicionar</Button>
+                <div className="member-invite-block">
+                  <strong>Convidar diretamente</strong>
+                  <InviteField aria-label="Nome ou e-mail" placeholder="Nome ou e-mail" value={newMember} onChange={(event) => setNewMember(event.target.value)} onInvite={addMember} />
+                  <small>Pressione enviar ou Enter para adicionar.</small>
+                </div>
+                <div className="invite-link-block">
+                  <div>
+                    <Link2 aria-hidden="true" />
+                    <span><strong>Link de convite</strong><small>Quem receber pode entrar nesta lista.</small></span>
+                  </div>
+                  <code>{inviteUrl}</code>
+                  <div className="invite-link-actions">
+                    <Button variant="secondary" icon={inviteCopied ? Check : Copy} onClick={copyInvite}>{inviteCopied ? "Link copiado" : "Copiar link"}</Button>
+                    <Button variant="outline" icon={Share2} onClick={shareInvite}>Compartilhar</Button>
+                  </div>
                 </div>
               </div>
             </SheetContent>
