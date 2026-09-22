@@ -709,7 +709,7 @@ nav button[data-active] {
 .detail-media > .glass-icon-button {
   position: absolute;
   z-index: 2;
-  left: 50%;
+  right: var(--space-4);
   top: 50%;
   transform: translate(-50%, -50%);
 }
@@ -1009,6 +1009,33 @@ nav button[data-active] {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-2);
+}
+.action-feedback {
+  position: absolute;
+  z-index: 80;
+  left: 50%;
+  bottom: var(--space-6);
+  width: max-content;
+  max-width: calc(100% - (var(--space-4) * 2));
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-full);
+  background: var(--glass-background);
+  color: var(--foreground);
+  box-shadow: var(--shadow-raised);
+  backdrop-filter: blur(var(--glass-blur));
+  font-size: var(--type-body-emphasis-size);
+  line-height: var(--type-body-emphasis-line);
+  font-weight: var(--type-body-emphasis-weight);
+}
+.action-feedback svg {
+  width: 16px;
+  height: 16px;
+  color: var(--success);
 }
 .collection-members span {
   width: 28px;

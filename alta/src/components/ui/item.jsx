@@ -36,7 +36,7 @@ function Item({
         />
       )}
       {!thumbnail && Icon && (
-        <span className="grid size-10 shrink-0 place-items-center rounded-md bg-muted text-muted-foreground">
+        <span data-slot="item-icon" className="grid size-10 shrink-0 place-items-center rounded-md bg-muted text-muted-foreground">
           <Icon className="size-4" aria-hidden="true" />
         </span>
       )}

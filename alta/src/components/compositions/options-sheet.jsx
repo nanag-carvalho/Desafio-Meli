@@ -53,11 +53,15 @@ function OptionsSheet({
           <SheetDescription>{description}</SheetDescription>
         </SheetHeader>
         <div className="grid gap-1 px-2">
-          {options.map(({ value, onSelect, ...option }) => (
+          {options.map(({ value, onSelect, tone, className: optionClassName, ...option }) => (
             <SheetClose asChild key={value}>
               <Item
                 {...option}
-                className="min-h-14 border-0 bg-transparent px-2 hover:bg-muted"
+                className={cn(
+                  "min-h-14 border-0 bg-transparent px-2 hover:bg-muted",
+                  tone === "destructive" && "text-destructive hover:bg-destructive/10 [&_[data-slot=item-icon]]:text-destructive",
+                  optionClassName,
+                )}
                 onClick={() => onSelect?.(value)}
               />
             </SheetClose>

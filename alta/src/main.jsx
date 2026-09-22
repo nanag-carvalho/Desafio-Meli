@@ -332,7 +332,7 @@ function Rail({ title, children, reason, showAction = true, onAction }) {
   );
 }
 
-function CatalogView({ title, items, open, close, collection, onUpdate, onDelete }) {
+function CatalogView({ title, items, open, close, collection, onUpdate, onDelete, onFeedback }) {
   const shared = collection?.type === "Compartilhada";
   const memberCount = collection?.members?.length ?? 1;
   const [editingName, setEditingName] = useState(false);
@@ -341,15 +341,26 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
   const [draftName, setDraftName] = useState(title);
   const [newMember, setNewMember] = useState("");
   const [inviteCopied, setInviteCopied] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  const notify = (message) => {
+    setFeedback(message);
+    window.setTimeout(() => setFeedback(""), 2200);
+  };
+  const applyUpdate = (updated, message) => {
+    onUpdate?.(updated);
+    notify(message);
+  };
   const inviteUrl = "mercadoplay.com/lista/convite-7f2a";
   const copyInvite = async () => {
     await navigator.clipboard?.writeText(`https://${inviteUrl}`);
     setInviteCopied(true);
+    notify("Link copiado");
     window.setTimeout(() => setInviteCopied(false), 1800);
   };
   const shareInvite = async () => {
     if (navigator.share) {
       await navigator.share({ title: `Entre na lista ${title}`, url: `https://${inviteUrl}` });
+      notify("Convite compartilhado");
     } else {
       await copyInvite();
     }
@@ -357,7 +368,7 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
   const addMember = () => {
     if (!newMember.trim()) return;
     const initials = newMember.trim().split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
-    onUpdate?.({ ...collection, members: [...(collection.members ?? ["NC"]), initials] });
+    applyUpdate({ ...collection, members: [...(collection.members ?? ["NC"]), initials] }, "Convite adicionado");
     setNewMember("");
   };
   const supporting = collection ? (
@@ -372,8 +383,8 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
   const collectionOptions = collection ? [
     { value: "rename", icon: Pencil, title: "Editar nome", supporting: "Atualize o nome desta lista", onSelect: () => setEditingName(true) },
     ...(shared ? [{ value: "members", icon: UserPlus, title: "Gerenciar participantes", supporting: "Convide ou remova pessoas", onSelect: () => setManagingMembers(true) }] : []),
-    { value: "privacy", icon: Lock, title: "Alterar privacidade", supporting: shared ? "Tornar esta lista privada" : "Transformar em compartilhada", onSelect: () => onUpdate?.({ ...collection, type: shared ? "Privada" : "Compartilhada", members: shared ? undefined : ["NC"] }) },
-    { value: "delete", icon: Trash2, title: "Excluir lista", supporting: "Remove a lista, sem afetar os títulos", onSelect: () => setConfirmingDelete(true) },
+    { value: "privacy", icon: Lock, title: "Alterar privacidade", supporting: shared ? "Tornar esta lista privada" : "Transformar em compartilhada", onSelect: () => applyUpdate({ ...collection, type: shared ? "Privada" : "Compartilhada", members: shared ? undefined : ["NC"] }, shared ? "Lista agora é privada" : "Lista agora é compartilhada") },
+    { value: "delete", icon: Trash2, title: "Excluir lista", supporting: "Remove a lista, sem afetar os títulos", tone: "destructive", onSelect: () => setConfirmingDelete(true) },
   ] : [];
   return (
     <motion.main
@@ -414,6 +425,14 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
           <Poster key={`${item.name}-${index}`} title={item} onOpen={open} />
         ))}
       </div>
+      <AnimatePresence>
+        {feedback ? (
+          <motion.div className="action-feedback" role="status" initial={{ opacity: 0, y: 12, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }} transition={{ duration: 0.2 }}>
+            <Check aria-hidden="true" />
+            <span>{feedback}</span>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
       {collection ? (
         <>
           <Sheet open={editingName} onOpenChange={setEditingName}>
@@ -424,7 +443,7 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
               </SheetHeader>
               <div className="px-4"><Input aria-label="Nome da lista" value={draftName} onChange={(event) => setDraftName(event.target.value)} /></div>
               <SheetFooter>
-                <Button disabled={!draftName.trim()} onClick={() => { onUpdate?.({ ...collection, name: draftName.trim() }); setEditingName(false); }}>Salvar</Button>
+                <Button disabled={!draftName.trim()} onClick={() => { applyUpdate({ ...collection, name: draftName.trim() }, "Nome atualizado"); setEditingName(false); }}>Salvar</Button>
               </SheetFooter>
             </SheetContent>
           </Sheet>
@@ -436,7 +455,9 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
               </SheetHeader>
               <div className="member-manager">
                 {(collection.members ?? ["NC"]).map((member, index) => (
-                  <Item key={`${member}-${index}`} title={member === "NC" ? "Você" : member} supporting={index === 0 ? "Proprietária" : "Colaborador"} trailing={index === 0 ? <span /> : <IconButton label={`Remover ${member}`} onClick={() => onUpdate?.({ ...collection, members: collection.members.filter((_, memberIndex) => memberIndex !== index) })}><X /></IconButton>} />
+                  <motion.div key={`${member}-${index}`} layout initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
+                    <Item title={member === "NC" ? "Você" : member} supporting={index === 0 ? "Proprietária" : "Colaborador"} trailing={index === 0 ? <span /> : <IconButton label={`Remover ${member}`} onClick={() => applyUpdate({ ...collection, members: collection.members.filter((_, memberIndex) => memberIndex !== index) }, `${member} removido`)}><X /></IconButton>} />
+                  </motion.div>
                 ))}
                 <div className="member-invite-block">
                   <strong>Convidar diretamente</strong>
@@ -465,7 +486,7 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
               </SheetHeader>
               <SheetFooter className="grid grid-cols-2 gap-2">
                 <Button variant="outline" onClick={() => setConfirmingDelete(false)}>Cancelar</Button>
-                <Button variant="destructive" onClick={() => onDelete?.(collection)}>Excluir lista</Button>
+                <Button variant="destructive" onClick={() => { onFeedback?.("Lista excluída"); onDelete?.(collection); }}>Excluir lista</Button>
               </SheetFooter>
             </SheetContent>
           </Sheet>
@@ -998,6 +1019,11 @@ function ProfilePage({ open, onDepthChange }) {
   ]);
   const [selectedList, setSelectedList] = useState(null);
   const [creatingList, setCreatingList] = useState(false);
+  const [profileFeedback, setProfileFeedback] = useState("");
+  const notifyProfile = (message) => {
+    setProfileFeedback(message);
+    window.setTimeout(() => setProfileFeedback(""), 2200);
+  };
   const updateList = (updated) => {
     setLists((current) => current.map((list) => list.id === updated.id ? updated : list));
     setSelectedList((current) => current?.id === updated.id ? updated : current);
@@ -1016,6 +1042,7 @@ function ProfilePage({ open, onDepthChange }) {
         open={open}
         collection={selectedList}
         onUpdate={updateList}
+        onFeedback={notifyProfile}
         onDelete={(listToDelete) => { setLists((current) => current.filter((list) => list.id !== listToDelete.id)); setSelectedList(null); onDepthChange(false); }}
         close={() => { setSelectedList(null); onDepthChange(false); }}
       />
@@ -1023,6 +1050,14 @@ function ProfilePage({ open, onDepthChange }) {
   }
   return (
     <main className="page-pad profile-page">
+      <AnimatePresence>
+        {profileFeedback ? (
+          <motion.div className="action-feedback" role="status" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
+            <Check aria-hidden="true" />
+            <span>{profileFeedback}</span>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
       <div className="profile-head">
         <div className="profile-avatar">NC</div>
         <div>
