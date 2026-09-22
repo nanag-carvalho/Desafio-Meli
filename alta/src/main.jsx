@@ -327,7 +327,8 @@ function Rail({ title, children, reason, showAction = true, onAction }) {
   );
 }
 
-function CatalogView({ title, items, open, close }) {
+function CatalogView({ title, items, open, close, collection }) {
+  const shared = collection?.type === "Compartilhada";
   return (
     <motion.main
       className="catalog-view"
@@ -344,6 +345,30 @@ function CatalogView({ title, items, open, close }) {
           leading={<IconButton label="Voltar" onClick={close}><ArrowLeft /></IconButton>}
         />
       </div>
+      {collection ? (
+        <section className="collection-context" aria-label="Informações da lista">
+          <div className="collection-privacy">
+            <span className="collection-privacy-icon" aria-hidden="true">
+              {shared ? <Users /> : <Lock />}
+            </span>
+            <span>
+              <strong>{collection.type}</strong>
+              <small>
+                {shared
+                  ? `${collection.members?.length ?? 1} pessoas podem adicionar títulos`
+                  : "Somente você pode ver e editar"}
+              </small>
+            </span>
+          </div>
+          {shared ? (
+            <div className="collection-members" aria-label="Participantes">
+              {(collection.members ?? ["NC"]).slice(0, 4).map((member, index) => (
+                <span key={`${member}-${index}`} title={member}>{member}</span>
+              ))}
+            </div>
+          ) : null}
+        </section>
+      ) : null}
       <div className="catalog-grid">
         {items.map((item, index) => (
           <Poster key={`${item.name}-${index}`} title={item} onOpen={open} />
@@ -884,6 +909,7 @@ function ProfilePage({ open, onDepthChange }) {
         title={selectedList.name}
         items={selectedList.items}
         open={open}
+        collection={selectedList}
         close={() => { setSelectedList(null); onDepthChange(false); }}
       />
     );
@@ -932,7 +958,7 @@ function ProfilePage({ open, onDepthChange }) {
         </p>
         <div className="profile-lists">
           <div className="list-item">
-            <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => { setSelectedList({ name: "Quero assistir", items: catalog.slice(0, 6) }); onDepthChange(true); }}>
+            <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => { setSelectedList({ name: "Quero assistir", type: "Privada", items: catalog.slice(0, 6) }); onDepthChange(true); }}>
             <ListVideo />
             <span>
               <strong>Quero assistir</strong>
@@ -942,7 +968,7 @@ function ProfilePage({ open, onDepthChange }) {
             <OptionsSheet withinContext title="Opções da lista" description="Organize, compartilhe ou altere a privacidade." options={listMenu("Quero assistir")} trigger={<IconButton label="Opções"><MoreHorizontal /></IconButton>} />
           </div>
           <div className="list-item">
-            <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => { setSelectedList({ name: "Noite em família", items: catalog.slice(2, 7) }); onDepthChange(true); }}>
+            <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => { setSelectedList({ name: "Noite em família", type: "Compartilhada", members: ["NC", "RA", "LM"], items: catalog.slice(2, 7) }); onDepthChange(true); }}>
             <Users />
             <span>
               <strong>Noite em família</strong>
@@ -953,7 +979,7 @@ function ProfilePage({ open, onDepthChange }) {
           </div>
           {createdLists.map((list) => (
             <div className="list-item" key={list.name}>
-              <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => { setSelectedList({ name: list.name, items: [] }); onDepthChange(true); }}><Lock /><span><strong>{list.name}</strong><small>{list.type} · {list.count} títulos</small></span></motion.button>
+              <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => { setSelectedList({ ...list, members: list.type === "Compartilhada" ? ["NC"] : undefined, items: [] }); onDepthChange(true); }}>{list.type === "Compartilhada" ? <Users /> : <Lock />}<span><strong>{list.name}</strong><small>{list.type} · {list.count} títulos</small></span></motion.button>
               <OptionsSheet withinContext title="Opções da lista" description="A lista pode evoluir com você." options={listMenu(list.name)} trigger={<IconButton label="Opções"><MoreHorizontal /></IconButton>} />
             </div>
           ))}
