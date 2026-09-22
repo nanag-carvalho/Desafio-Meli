@@ -53,12 +53,12 @@ function OptionsSheet({
           <SheetDescription>{description}</SheetDescription>
         </SheetHeader>
         <div className="grid gap-1 px-2">
-          {options.map(({ value, ...option }) => (
+          {options.map(({ value, onSelect, ...option }) => (
             <SheetClose asChild key={value}>
               <Item
                 {...option}
                 className="min-h-14 border-0 bg-transparent px-2 hover:bg-muted"
-                onClick={() => option.onSelect?.(value)}
+                onClick={() => onSelect?.(value)}
               />
             </SheetClose>
           ))}

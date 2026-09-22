@@ -329,16 +329,28 @@ function Rail({ title, children, reason, showAction = true, onAction }) {
   );
 }
 
-function CatalogView({ title, items, open, close, collection }) {
+function CatalogView({ title, items, open, close, collection, onUpdate, onDelete }) {
   const shared = collection?.type === "Compartilhada";
-  const supporting = collection
-    ? `${items.length} títulos · ${collection.type}${shared ? ` · ${collection.members?.length ?? 1} pessoas` : ""}`
-    : `${items.length} títulos disponíveis nesta seleção`;
+  const memberCount = collection?.members?.length ?? 1;
+  const [editingName, setEditingName] = useState(false);
+  const [managingMembers, setManagingMembers] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [draftName, setDraftName] = useState(title);
+  const [newMember, setNewMember] = useState("");
+  const supporting = collection ? (
+    <span className="catalog-supporting">
+      <span>{items.length} títulos</span>
+      <span aria-hidden="true">·</span>
+      {shared ? <Users aria-hidden="true" /> : <Lock aria-hidden="true" />}
+      <span>{collection.type}</span>
+      {shared ? <span>· {memberCount} {memberCount === 1 ? "pessoa" : "pessoas"}</span> : null}
+    </span>
+  ) : `${items.length} títulos disponíveis nesta seleção`;
   const collectionOptions = collection ? [
-    { value: "rename", icon: Pencil, title: "Editar nome", supporting: "Atualize o nome desta lista" },
-    ...(shared ? [{ value: "members", icon: UserPlus, title: "Gerenciar participantes", supporting: "Convide ou remova pessoas" }] : []),
-    { value: "privacy", icon: Lock, title: "Alterar privacidade", supporting: shared ? "Tornar esta lista privada" : "Transformar em compartilhada" },
-    { value: "delete", icon: Trash2, title: "Excluir lista", supporting: "Remove a lista, sem afetar os títulos" },
+    { value: "rename", icon: Pencil, title: "Editar nome", supporting: "Atualize o nome desta lista", onSelect: () => setEditingName(true) },
+    ...(shared ? [{ value: "members", icon: UserPlus, title: "Gerenciar participantes", supporting: "Convide ou remova pessoas", onSelect: () => setManagingMembers(true) }] : []),
+    { value: "privacy", icon: Lock, title: "Alterar privacidade", supporting: shared ? "Tornar esta lista privada" : "Transformar em compartilhada", onSelect: () => onUpdate?.({ ...collection, type: shared ? "Privada" : "Compartilhada", members: shared ? undefined : ["NC"] }) },
+    { value: "delete", icon: Trash2, title: "Excluir lista", supporting: "Remove a lista, sem afetar os títulos", onSelect: () => setConfirmingDelete(true) },
   ] : [];
   return (
     <motion.main
@@ -379,6 +391,51 @@ function CatalogView({ title, items, open, close, collection }) {
           <Poster key={`${item.name}-${index}`} title={item} onOpen={open} />
         ))}
       </div>
+      {collection ? (
+        <>
+          <Sheet open={editingName} onOpenChange={setEditingName}>
+            <SheetContent side="bottom" portalContainer={document.querySelector(".device")} className="mx-auto max-w-[420px] rounded-t-2xl border border-b-0 border-border bg-popover">
+              <SheetHeader>
+                <SheetTitle>Editar nome</SheetTitle>
+                <SheetDescription>Use um nome curto que explique o objetivo da lista.</SheetDescription>
+              </SheetHeader>
+              <div className="px-4"><Input aria-label="Nome da lista" value={draftName} onChange={(event) => setDraftName(event.target.value)} /></div>
+              <SheetFooter>
+                <Button disabled={!draftName.trim()} onClick={() => { onUpdate?.({ ...collection, name: draftName.trim() }); setEditingName(false); }}>Salvar</Button>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+          <Sheet open={managingMembers} onOpenChange={setManagingMembers}>
+            <SheetContent side="bottom" portalContainer={document.querySelector(".device")} className="mx-auto max-w-[420px] rounded-t-2xl border border-b-0 border-border bg-popover">
+              <SheetHeader>
+                <SheetTitle>Participantes</SheetTitle>
+                <SheetDescription>Quem participa pode adicionar e remover títulos.</SheetDescription>
+              </SheetHeader>
+              <div className="member-manager">
+                {(collection.members ?? ["NC"]).map((member, index) => (
+                  <Item key={`${member}-${index}`} title={member === "NC" ? "Você" : member} supporting={index === 0 ? "Proprietária" : "Colaborador"} trailing={index === 0 ? <span /> : <IconButton label={`Remover ${member}`} onClick={() => onUpdate?.({ ...collection, members: collection.members.filter((_, memberIndex) => memberIndex !== index) })}><X /></IconButton>} />
+                ))}
+                <div className="member-invite-row">
+                  <Input aria-label="Nome ou e-mail" placeholder="Nome ou e-mail" value={newMember} onChange={(event) => setNewMember(event.target.value)} />
+                  <Button disabled={!newMember.trim()} onClick={() => { const initials = newMember.trim().split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase(); onUpdate?.({ ...collection, members: [...(collection.members ?? ["NC"]), initials] }); setNewMember(""); }}>Adicionar</Button>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+          <Sheet open={confirmingDelete} onOpenChange={setConfirmingDelete}>
+            <SheetContent side="bottom" portalContainer={document.querySelector(".device")} className="mx-auto max-w-[420px] rounded-t-2xl border border-b-0 border-border bg-popover">
+              <SheetHeader>
+                <SheetTitle>Excluir “{title}”?</SheetTitle>
+                <SheetDescription>Os títulos continuam disponíveis no catálogo e no histórico.</SheetDescription>
+              </SheetHeader>
+              <SheetFooter className="grid grid-cols-2 gap-2">
+                <Button variant="outline" onClick={() => setConfirmingDelete(false)}>Cancelar</Button>
+                <Button variant="destructive" onClick={() => onDelete?.(collection)}>Excluir lista</Button>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+        </>
+      ) : null}
     </motion.main>
   );
 }
@@ -900,13 +957,21 @@ function StorePage({ open, onDepthChange }) {
 function ProfilePage({ open, onDepthChange }) {
   const [historyFilter, setHistoryFilter] = useState("Todos");
   const [shareTitle, setShareTitle] = useState(null);
-  const [createdLists, setCreatedLists] = useState([]);
+  const [lists, setLists] = useState([
+    { id: "watch", name: "Quero assistir", type: "Privada", count: 12, items: catalog.slice(0, 6) },
+    { id: "family", name: "Noite em família", type: "Compartilhada", count: 5, members: ["NC", "RA", "LM"], items: catalog.slice(2, 7) },
+  ]);
   const [selectedList, setSelectedList] = useState(null);
   const [creatingList, setCreatingList] = useState(false);
-  const listMenu = (name) => [
-    { value: "open", icon: ListVideo, title: "Abrir lista", supporting: `Ver títulos de ${name}` },
-    { value: "invite", icon: UserPlus, title: "Convidar pessoas", supporting: "Transforma em compartilhada" },
-    { value: "privacy", icon: Lock, title: "Privacidade", supporting: "Privada ou compartilhada" },
+  const updateList = (updated) => {
+    setLists((current) => current.map((list) => list.id === updated.id ? updated : list));
+    setSelectedList((current) => current?.id === updated.id ? updated : current);
+  };
+  const openList = (list) => { setSelectedList(list); onDepthChange(true); };
+  const listMenu = (list) => [
+    { value: "open", icon: ListVideo, title: "Abrir lista", supporting: `Ver títulos de ${list.name}`, onSelect: () => openList(list) },
+    { value: "invite", icon: UserPlus, title: "Convidar pessoas", supporting: "Transforma em compartilhada", onSelect: () => updateList({ ...list, type: "Compartilhada", members: list.members ?? ["NC"] }) },
+    { value: "privacy", icon: Lock, title: "Privacidade", supporting: list.type, onSelect: () => updateList({ ...list, type: list.type === "Privada" ? "Compartilhada" : "Privada", members: list.type === "Privada" ? ["NC"] : undefined }) },
   ];
   if (selectedList) {
     return (
@@ -915,6 +980,8 @@ function ProfilePage({ open, onDepthChange }) {
         items={selectedList.items}
         open={open}
         collection={selectedList}
+        onUpdate={updateList}
+        onDelete={(listToDelete) => { setLists((current) => current.filter((list) => list.id !== listToDelete.id)); setSelectedList(null); onDepthChange(false); }}
         close={() => { setSelectedList(null); onDepthChange(false); }}
       />
     );
@@ -962,30 +1029,10 @@ function ProfilePage({ open, onDepthChange }) {
           Crie quantas listas quiser. Cada uma pode ser privada ou compartilhada.
         </p>
         <div className="profile-lists">
-          <div className="list-item">
-            <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => { setSelectedList({ name: "Quero assistir", type: "Privada", items: catalog.slice(0, 6) }); onDepthChange(true); }}>
-            <ListVideo />
-            <span>
-              <strong>Quero assistir</strong>
-              <small>Privada · 12 títulos</small>
-            </span>
-            </motion.button>
-            <OptionsSheet withinContext title="Opções da lista" description="Organize, compartilhe ou altere a privacidade." options={listMenu("Quero assistir")} trigger={<IconButton label="Opções"><MoreHorizontal /></IconButton>} />
-          </div>
-          <div className="list-item">
-            <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => { setSelectedList({ name: "Noite em família", type: "Compartilhada", members: ["NC", "RA", "LM"], items: catalog.slice(2, 7) }); onDepthChange(true); }}>
-            <Users />
-            <span>
-              <strong>Noite em família</strong>
-              <small>Compartilhada · 3 pessoas</small>
-            </span>
-            </motion.button>
-            <OptionsSheet withinContext title="Opções da lista" description="Gerencie títulos e participantes." options={listMenu("Noite em família")} trigger={<IconButton label="Opções"><MoreHorizontal /></IconButton>} />
-          </div>
-          {createdLists.map((list) => (
+          {lists.map((list) => (
             <div className="list-item" key={list.name}>
-              <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => { setSelectedList({ ...list, members: list.type === "Compartilhada" ? ["NC"] : undefined, items: [] }); onDepthChange(true); }}>{list.type === "Compartilhada" ? <Users /> : <Lock />}<span><strong>{list.name}</strong><small>{list.type} · {list.count} títulos</small></span></motion.button>
-              <OptionsSheet withinContext title="Opções da lista" description="A lista pode evoluir com você." options={listMenu(list.name)} trigger={<IconButton label="Opções"><MoreHorizontal /></IconButton>} />
+              <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => openList(list)}>{list.type === "Compartilhada" ? <Users /> : <Lock />}<span><strong>{list.name}</strong><small>{list.type === "Compartilhada" ? `${list.members?.length ?? 1} pessoas` : "Privada"} · {list.count} títulos</small></span></motion.button>
+              <OptionsSheet withinContext title="Opções da lista" description={list.name} options={listMenu(list)} trigger={<IconButton label={`Opções de ${list.name}`}><MoreHorizontal /></IconButton>} />
             </div>
           ))}
         </div>
@@ -1036,7 +1083,7 @@ function ProfilePage({ open, onDepthChange }) {
       </section>
       {shareTitle ? <ShareSheet title={shareTitle} close={() => setShareTitle(null)} /> : null}
       <AnimatePresence>
-        {creatingList ? <CreateListSheet close={() => setCreatingList(false)} onCreate={(list) => { setCreatedLists((current) => [...current, list]); setCreatingList(false); }} /> : null}
+        {creatingList ? <CreateListSheet close={() => setCreatingList(false)} onCreate={(list) => { setLists((current) => [...current, { ...list, id: `list-${Date.now()}`, items: [], members: list.type === "Compartilhada" ? ["NC"] : undefined }]); setCreatingList(false); }} /> : null}
       </AnimatePresence>
     </main>
   );
