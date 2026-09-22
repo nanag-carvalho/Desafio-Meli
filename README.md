@@ -6,6 +6,11 @@ Case completo de Product Design que conecta descoberta, escolha, contribuição 
 
 Abra `index.html`. Esta é a página preparada para avaliação e publicação.
 
+**Produção:** https://desafio-meli.vercel.app/
+
+- Protótipo em alta: https://desafio-meli.vercel.app/alta/dist/
+- Mini Design System: https://desafio-meli.vercel.app/alta/dist/ds
+
 ## Artefatos
 
 - `index.html` — narrativa completa do case
@@ -26,4 +31,4 @@ Depois, acesse `http://127.0.0.1:8765/`.
 
 ## Publicação
 
-O projeto é publicado pela Vercel a partir da raiz do repositório. Cada push em `main` atualiza o site de produção após a integração do repositório.
+O projeto está publicado na Vercel a partir da raiz deste repositório.
