@@ -18,6 +18,8 @@ function OptionsSheet({
   title = "Criar",
   description = "Escolha o que deseja iniciar.",
   options = [],
+  summary,
+  onSummarySelect,
   trigger,
   withinContext = false,
 }) {
@@ -47,6 +49,21 @@ function OptionsSheet({
           <SheetTitle>{title}</SheetTitle>
           <SheetDescription>{description}</SheetDescription>
         </SheetHeader>
+        {summary ? (
+          onSummarySelect ? (
+            <SheetClose asChild>
+              <button
+                type="button"
+                className="mx-4 mb-2 text-left"
+                onClick={onSummarySelect}
+              >
+                {summary}
+              </button>
+            </SheetClose>
+          ) : (
+            <div className="mx-4 mb-2">{summary}</div>
+          )
+        ) : null}
         <div className="grid gap-1 px-2">
           {options.map(({ value, onSelect, tone, keepOpen = false, className: optionClassName, ...option }) => {
             const item = (

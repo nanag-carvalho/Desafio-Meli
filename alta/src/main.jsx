@@ -425,9 +425,22 @@ function CatalogView({ title, items, open, close, collection, filterable = false
       <span>{collection.type}</span>
     </span>
   ) : `${items.length} títulos disponíveis nesta seleção`;
+  const members = collection?.members ?? ["NC"];
+  const participantAvatars = (
+    <div className="participant-summary" data-slot="participant-summary">
+      <div>
+        <strong>Participantes</strong>
+        <span>{memberCount} {memberCount === 1 ? "pessoa" : "pessoas"} · gerenciar e convidar</span>
+      </div>
+      <div className="participant-summary-avatars" aria-hidden="true">
+        {members.slice(0, 3).map((member, index) => <span key={`${member}-${index}`}>{member}</span>)}
+        {memberCount > 3 ? <span>+{memberCount - 3}</span> : null}
+      </div>
+      <ChevronRight aria-hidden="true" />
+    </div>
+  );
   const collectionOptions = collection ? [
     { value: "rename", icon: Pencil, title: "Editar nome", supporting: "Atualize o nome desta lista", disclosure: true, onSelect: () => setEditingName(true) },
-    ...(shared ? [{ value: "members", icon: UserPlus, title: "Gerenciar participantes", supporting: "Convide ou remova pessoas", disclosure: true, onSelect: () => setManagingMembers(true) }] : []),
     { value: "privacy", icon: Lock, title: "Lista compartilhada", supporting: shared ? "Participantes podem colaborar" : "Somente você pode acessar", keepOpen: true, trailing: <Switch aria-label="Lista compartilhada" checked={shared} onCheckedChange={(checked) => applyUpdate({ ...collection, type: checked ? "Compartilhada" : "Privada", members: checked ? (collection.members ?? ["NC"]) : undefined }, checked ? "Lista agora é compartilhada" : "Lista agora é privada")} /> },
     { value: "delete", icon: Trash2, title: "Excluir lista", tone: "destructive", onSelect: () => setConfirmingDelete(true) },
   ] : [];
@@ -448,19 +461,21 @@ function CatalogView({ title, items, open, close, collection, filterable = false
           actions={collection ? (
             <div className="collection-header-actions">
               {shared ? (
-                <div className="collection-members" aria-label="Participantes">
-                  {(collection.members ?? ["NC"]).slice(0, 2).map((member, index) => (
+                <button type="button" className="collection-members" aria-label={`Gerenciar ${memberCount} participantes`} onClick={() => setManagingMembers(true)}>
+                  {members.slice(0, 2).map((member, index) => (
                     <span key={`${member}-${index}`} title={member}>{member}</span>
                   ))}
                   {memberCount > 2 ? <span title={`${memberCount - 2} participantes adicionais`}>+{memberCount - 2}</span> : null}
-                </div>
+                </button>
               ) : null}
               <OptionsSheet
                 withinContext
-                title="Opções da lista"
+                title="Gerenciar lista"
                 description={title}
+                summary={shared ? participantAvatars : null}
+                onSummarySelect={shared ? () => setManagingMembers(true) : undefined}
                 options={collectionOptions}
-                trigger={<IconButton label="Opções da lista"><MoreHorizontal /></IconButton>}
+                trigger={<IconButton label="Gerenciar lista"><MoreHorizontal /></IconButton>}
               />
             </div>
           ) : null}
@@ -507,22 +522,22 @@ function CatalogView({ title, items, open, close, collection, filterable = false
           <Sheet open={managingMembers} onOpenChange={setManagingMembers}>
             <SheetContent side="bottom" portalContainer={document.querySelector(".device")}>
               <SheetHeader>
-                <SheetTitle>Compartilhar lista</SheetTitle>
-                <SheetDescription>Convide pessoas diretamente ou envie um link.</SheetDescription>
+                <SheetTitle>Participantes</SheetTitle>
+                <SheetDescription>{title} · {memberCount} {memberCount === 1 ? "pessoa" : "pessoas"}</SheetDescription>
               </SheetHeader>
               <div className="member-manager">
-                <p className="sheet-field-label">Convidar pessoas</p>
+                <p className="sheet-field-label">Convidar</p>
                 <InviteField aria-label="Nome ou e-mail" placeholder="Nome ou e-mail" value={newMember} onChange={(event) => setNewMember(event.target.value)} onInvite={addMember} />
                 <div className="member-list" aria-label="Participantes da lista">
-                  <p className="sheet-field-label">Participantes <span>{memberCount}</span></p>
-                  {(collection.members ?? ["NC"]).map((member, index) => (
+                  <p className="sheet-field-label">Na lista <span>{memberCount}</span></p>
+                  {members.map((member, index) => (
                     <motion.div key={`${member}-${index}`} layout initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}>
                       <ParticipantRow initials={member} name={member === "NC" ? "Você" : member} owner={index === 0} onRemove={index === 0 ? undefined : () => applyUpdate({ ...collection, members: collection.members.filter((_, memberIndex) => memberIndex !== index) }, `${member} removido`)} />
                     </motion.div>
                   ))}
                 </div>
                 <div className="member-share-actions">
-                  <p className="sheet-field-label">Compartilhar convite</p>
+                  <p className="sheet-field-label">Enviar link de convite</p>
                   <ShareChannels copied={inviteCopied} onSelect={(channel) => channel === "copy" ? copyInvite() : shareInvite()} />
                 </div>
               </div>
@@ -580,7 +595,7 @@ function Header({ onProfile }) {
   return (
     <header>
       <b className="product-brand">
-        <span className="product-brand-mark" aria-hidden="true"><img src="./assets/mercado-livre-handshake.svg" alt="" /></span>
+        <span className="product-brand-mark" aria-hidden="true"><img src="./assets/mercado-livre-handshake-white.svg" alt="" /></span>
         <span>Mercado <i>Play</i></span>
       </b>
       <div>
