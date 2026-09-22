@@ -46,6 +46,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toggle } from "@/components/ui/toggle";
+import { Switch } from "@/components/ui/switch";
 import { ActionTile } from "@/components/compositions/action-tile";
 import { Item } from "@/components/ui/item";
 import { AppHeader } from "@/components/compositions/app-header";
@@ -1078,6 +1079,12 @@ function Catalog() {
               selected
               title="Comédia"
               supporting="Choice row · selecionado"
+            />
+            <Item
+              icon={Lock}
+              title="Lista compartilhada"
+              supporting="Estado persistente"
+              trailing={<Switch aria-label="Lista compartilhada" />}
             />
           </div>
         </Block>

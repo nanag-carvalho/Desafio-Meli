@@ -64,6 +64,9 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
+  Toaster,
+  toast,
+  Switch,
 } from "@/design-system";
 
 const A = "../../assets/prototipo/";
@@ -74,6 +77,7 @@ const titles = [
     meta: "Drama · 1h 42min",
     access: "Incluído",
     reason: "Porque você assistiu a dramas intimistas",
+    rating: "Amei",
   },
   {
     name: "Cidade Luz",
@@ -81,6 +85,7 @@ const titles = [
     meta: "Comédia · 1h 51min",
     access: "Alugar",
     reason: "Popular entre pessoas com interesses parecidos",
+    rating: "Gostei",
   },
   {
     name: "Horizonte Azul",
@@ -104,13 +109,14 @@ const catalog = [
     ["Arquivo 72", 2, "Séries", true, false],
     ["Depois da Chuva", 0, "Séries", false, false],
     ["Fora de Órbita", 1, "Filmes", true, false],
-  ].map(([name, art, kind, free, fresh]) => ({
+  ].map(([name, art, kind, free, fresh], index) => ({
     ...titles[art],
     name,
     kind,
     free,
     fresh,
     access: free ? "Incluído" : "Alugar",
+    rating: index % 3 === 0 ? "Gostei" : index % 3 === 1 ? "Amei" : undefined,
   })),
 ];
 const rankingCatalog = (names, type) =>
@@ -342,11 +348,9 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
   const [draftName, setDraftName] = useState(title);
   const [newMember, setNewMember] = useState("");
   const [inviteCopied, setInviteCopied] = useState(false);
-  const [feedback, setFeedback] = useState("");
-  const notify = (message) => {
-    setFeedback(message);
-    window.setTimeout(() => setFeedback(""), 2200);
-  };
+  const [listQuery, setListQuery] = useState("");
+  const [listFilter, setListFilter] = useState("Todos");
+  const notify = (message) => toast.success(message);
   const applyUpdate = (updated, message) => {
     onUpdate?.(updated);
     notify(message);
@@ -372,20 +376,31 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
     applyUpdate({ ...collection, members: [...(collection.members ?? ["NC"]), initials] }, "Convite adicionado");
     setNewMember("");
   };
+  const genreOf = (item) => item.meta?.split(" · ")[0] ?? "Outros";
+  const genres = collection ? [...new Set(items.map(genreOf))] : [];
+  const filters = collection ? [
+    { label: "Todos", count: items.length },
+    ...genres.map((genre) => ({ label: genre, count: items.filter((item) => genreOf(item) === genre).length })),
+    { label: "Avaliados", count: items.filter((item) => item.rating).length },
+  ].filter((filter) => filter.count > 0) : [];
+  const visibleItems = items.filter((item) => {
+    const matchesQuery = item.name.toLowerCase().includes(listQuery.trim().toLowerCase());
+    const matchesFilter = listFilter === "Todos" || (listFilter === "Avaliados" ? Boolean(item.rating) : genreOf(item) === listFilter);
+    return matchesQuery && matchesFilter;
+  });
   const supporting = collection ? (
     <span className="catalog-supporting">
       <span>{items.length} títulos</span>
       <span aria-hidden="true">·</span>
       {shared ? <Users aria-hidden="true" /> : <Lock aria-hidden="true" />}
       <span>{collection.type}</span>
-      {shared ? <span>· {memberCount} {memberCount === 1 ? "pessoa" : "pessoas"}</span> : null}
     </span>
   ) : `${items.length} títulos disponíveis nesta seleção`;
   const collectionOptions = collection ? [
     { value: "rename", icon: Pencil, title: "Editar nome", supporting: "Atualize o nome desta lista", disclosure: true, onSelect: () => setEditingName(true) },
     ...(shared ? [{ value: "members", icon: UserPlus, title: "Gerenciar participantes", supporting: "Convide ou remova pessoas", disclosure: true, onSelect: () => setManagingMembers(true) }] : []),
-    { value: "privacy", icon: Lock, title: "Alterar privacidade", supporting: shared ? "Tornar esta lista privada" : "Transformar em compartilhada", onSelect: () => applyUpdate({ ...collection, type: shared ? "Privada" : "Compartilhada", members: shared ? undefined : ["NC"] }, shared ? "Lista agora é privada" : "Lista agora é compartilhada") },
-    { value: "delete", icon: Trash2, title: "Excluir lista", supporting: "Remove a lista, sem afetar os títulos", tone: "destructive", onSelect: () => setConfirmingDelete(true) },
+    { value: "privacy", icon: Lock, title: "Lista compartilhada", supporting: shared ? "Participantes podem colaborar" : "Somente você pode acessar", keepOpen: true, trailing: <Switch aria-label="Lista compartilhada" checked={shared} onCheckedChange={(checked) => applyUpdate({ ...collection, type: checked ? "Compartilhada" : "Privada", members: checked ? (collection.members ?? ["NC"]) : undefined }, checked ? "Lista agora é compartilhada" : "Lista agora é privada")} /> },
+    { value: "delete", icon: Trash2, title: "Excluir lista", tone: "destructive", onSelect: () => setConfirmingDelete(true) },
   ] : [];
   return (
     <motion.main
@@ -405,9 +420,10 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
             <div className="collection-header-actions">
               {shared ? (
                 <div className="collection-members" aria-label="Participantes">
-                  {(collection.members ?? ["NC"]).slice(0, 3).map((member, index) => (
+                  {(collection.members ?? ["NC"]).slice(0, 2).map((member, index) => (
                     <span key={`${member}-${index}`} title={member}>{member}</span>
                   ))}
+                  {memberCount > 2 ? <span title={`${memberCount - 2} participantes adicionais`}>+{memberCount - 2}</span> : null}
                 </div>
               ) : null}
               <OptionsSheet
@@ -421,19 +437,33 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
           ) : null}
         />
       </div>
+      {collection ? (
+        <div className="catalog-tools">
+          <label className="catalog-search">
+            <Search aria-hidden="true" />
+            <Input aria-label="Buscar nesta lista" placeholder="Buscar nesta lista" value={listQuery} onChange={(event) => setListQuery(event.target.value)} />
+          </label>
+          <ChipRow>
+            {filters.map((filter) => (
+              <Chip key={filter.label} active={listFilter === filter.label} onClick={() => setListFilter(filter.label)}>
+                {filter.label} <span>{filter.count}</span>
+              </Chip>
+            ))}
+          </ChipRow>
+        </div>
+      ) : null}
       <div className="catalog-grid">
-        {items.map((item, index) => (
+        {visibleItems.map((item, index) => (
           <Poster key={`${item.name}-${index}`} title={item} onOpen={open} />
         ))}
       </div>
-      <AnimatePresence>
-        {feedback ? (
-          <motion.div className="action-feedback" role="status" initial={{ opacity: 0, y: 12, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }} transition={{ duration: 0.2 }}>
-            <Check aria-hidden="true" />
-            <span>{feedback}</span>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+      {collection && visibleItems.length === 0 ? (
+        <div className="catalog-empty">
+          <Search aria-hidden="true" />
+          <strong>Nenhum título encontrado</strong>
+          <p>Tente outro termo ou remova o filtro.</p>
+        </div>
+      ) : null}
       {collection ? (
         <>
           <Sheet open={editingName} onOpenChange={setEditingName}>
@@ -455,11 +485,7 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
                 <SheetDescription>Convide pessoas diretamente ou envie um link.</SheetDescription>
               </SheetHeader>
               <div className="member-manager">
-                <SectionHeader title="Convidar pessoas" />
-                <InviteField aria-label="Nome ou e-mail" placeholder="Nome ou e-mail" value={newMember} onChange={(event) => setNewMember(event.target.value)} onInvite={addMember} />
-                <SectionHeader title="Compartilhar convite" />
-                <ShareChannels copied={inviteCopied} onSelect={(channel) => channel === "copy" ? copyInvite() : shareInvite()} />
-                <SectionHeader title="Participantes" />
+                <SectionHeader size="sm" level={3} title="Participantes" />
                 <div className="participant-strip" aria-label="Participantes da lista">
                   {(collection.members ?? ["NC"]).map((member, index) => (
                     <motion.div key={`${member}-${index}`} layout initial={{ opacity: 0, scale: 0.88 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.88 }}>
@@ -467,6 +493,10 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
                     </motion.div>
                   ))}
                 </div>
+                <SectionHeader size="sm" level={3} title="Convidar pessoas" />
+                <InviteField aria-label="Nome ou e-mail" placeholder="Nome ou e-mail" value={newMember} onChange={(event) => setNewMember(event.target.value)} onInvite={addMember} />
+                <SectionHeader size="sm" level={3} title="Ou compartilhe o convite" />
+                <ShareChannels copied={inviteCopied} onSelect={(channel) => channel === "copy" ? copyInvite() : shareInvite()} />
               </div>
             </SheetContent>
           </Sheet>
@@ -1002,6 +1032,7 @@ function StorePage({ open, onDepthChange }) {
 
 function ProfilePage({ open, onDepthChange }) {
   const [historyFilter, setHistoryFilter] = useState("Todos");
+  const [favoriteFilter, setFavoriteFilter] = useState("Todos");
   const [shareTitle, setShareTitle] = useState(null);
   const [lists, setLists] = useState([
     { id: "watch", name: "Quero assistir", type: "Privada", count: 12, items: catalog.slice(0, 6) },
@@ -1009,11 +1040,7 @@ function ProfilePage({ open, onDepthChange }) {
   ]);
   const [selectedList, setSelectedList] = useState(null);
   const [creatingList, setCreatingList] = useState(false);
-  const [profileFeedback, setProfileFeedback] = useState("");
-  const notifyProfile = (message) => {
-    setProfileFeedback(message);
-    window.setTimeout(() => setProfileFeedback(""), 2200);
-  };
+  const notifyProfile = (message) => toast.success(message);
   const updateList = (updated) => {
     setLists((current) => current.map((list) => list.id === updated.id ? updated : list));
     setSelectedList((current) => current?.id === updated.id ? updated : current);
@@ -1040,14 +1067,6 @@ function ProfilePage({ open, onDepthChange }) {
   }
   return (
     <main className="page-pad profile-page">
-      <AnimatePresence>
-        {profileFeedback ? (
-          <motion.div className="action-feedback" role="status" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-            <Check aria-hidden="true" />
-            <span>{profileFeedback}</span>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
       <div className="profile-head">
         <div className="profile-avatar">NC</div>
         <div>
@@ -1059,13 +1078,18 @@ function ProfilePage({ open, onDepthChange }) {
       <section className="rail-section favorite-rail">
         <SectionHeader title="Favoritos" actionLabel="Ver todos" />
         <p className="rail-reason">Afinidade rápida e um atalho para indicar sem procurar novamente</p>
+        <ChipRow className="profile-chips">
+          <Chip active={favoriteFilter === "Todos"} onClick={() => setFavoriteFilter("Todos")}>Todos 3</Chip>
+          <Chip active={favoriteFilter === "Avaliados"} onClick={() => setFavoriteFilter("Avaliados")}>Avaliados 2</Chip>
+        </ChipRow>
         <ScrollArea orientation="horizontal" className="rail-scroll">
           <div className="rail">
-            {titles.slice(0, 3).map((title, index) => (
+            {titles.filter((title) => favoriteFilter === "Todos" || title.rating).slice(0, 3).map((title, index) => (
               <QuickRecommendationCard
                 key={title.name}
                 density="compact"
                 source="favorite"
+                rating={title.rating}
                 image={title.img}
                 title={title.name}
                 onOpen={() => open(title, `profile-favorite-${index}`)}
@@ -1644,6 +1668,7 @@ function App() {
             />
           )}
         </AnimatePresence>
+        <Toaster />
       </div>
       <aside className="notes">
         <Badge tone="brand">ALTA · V2</Badge>

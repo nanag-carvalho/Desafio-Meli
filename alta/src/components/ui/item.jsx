@@ -12,6 +12,7 @@ function Item({
   selectable = false,
   selected = false,
   disclosure = false,
+  variant = "default",
   onClick,
   ...props
 }) {
@@ -24,6 +25,7 @@ function Item({
       aria-selected={selectable ? selected : undefined}
       className={cn(
         "flex min-h-16 w-full items-center gap-3 rounded-lg border border-border bg-popover px-3 py-2 text-left text-foreground transition-colors outline-none hover:bg-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 data-selected:bg-primary/10",
+        variant === "plain" && "rounded-none border-x-0 border-t-0 bg-transparent px-0 last:border-b-0 hover:bg-transparent",
         className,
       )}
       onClick={onClick}

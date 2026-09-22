@@ -48,8 +48,8 @@ function OptionsSheet({
           <SheetDescription>{description}</SheetDescription>
         </SheetHeader>
         <div className="grid gap-1 px-2">
-          {options.map(({ value, onSelect, tone, className: optionClassName, ...option }) => (
-            <SheetClose asChild key={value}>
+          {options.map(({ value, onSelect, tone, keepOpen = false, className: optionClassName, ...option }) => {
+            const item = (
               <Item
                 {...option}
                 className={cn(
@@ -57,10 +57,11 @@ function OptionsSheet({
                   tone === "destructive" && "text-destructive hover:bg-destructive/10 [&_[data-slot=item-icon]]:text-destructive",
                   optionClassName,
                 )}
-                onClick={() => onSelect?.(value)}
+                onClick={onSelect ? () => onSelect(value) : undefined}
               />
-            </SheetClose>
-          ))}
+            );
+            return keepOpen ? <React.Fragment key={value}>{item}</React.Fragment> : <SheetClose asChild key={value}>{item}</SheetClose>;
+          })}
         </div>
       </SheetContent>
     </Sheet>

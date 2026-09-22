@@ -16,6 +16,7 @@ function QuickRecommendationCard({
   imageAlt = "",
   title,
   source = "rated",
+  rating,
   density = "default",
   onOpen,
   onRecommend,
@@ -47,6 +48,11 @@ function QuickRecommendationCard({
         >
           {sourceLabels[source] ?? source}
         </Badge>
+        {rating ? (
+          <Badge tone="brand" className="absolute right-2 top-2">
+            {rating}
+          </Badge>
+        ) : null}
       </button>
       <Button
         variant="ghost"

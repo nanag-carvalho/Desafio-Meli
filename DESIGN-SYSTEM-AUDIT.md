@@ -25,3 +25,6 @@ Transformar CommerceSheet em `PurchaseSheet` dentro de compositions, usando Shee
 - `border` diferencia superfícies com baixo contraste, sem contornar cards em excesso.
 - `input` dá contorno perceptível aos controles sobre `background`, `card` e `popover`.
 - `ring` mantém foco em azul Mercado Livre, sem depender da cor da borda em repouso.
+- `Switch` representa estados binários persistentes sem fechar o contexto atual.
+- `Sonner` centraliza feedback transitório; toasts ficam limitados ao shell mobile.
+- `SectionHeader/size=sm` preserva a hierarquia de grupos dentro de sheets.

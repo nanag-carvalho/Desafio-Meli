@@ -30,3 +30,5 @@ export {
 } from "@/components/ui/sheet";
 export { Skeleton } from "@/components/ui/skeleton";
 export { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+export { Toaster, toast } from "@/components/ui/sonner";
+export { Switch } from "@/components/ui/switch";

@@ -28,3 +28,10 @@ Escala: **0** sem problema, **1** cosmético, **2** moderado, **3** grave, **4**
 - Marcador circular comunica seleção dentro do contexto atual.
 - Ações imediatas não recebem chevron; o feedback confirma o resultado.
 - Ações destrutivas ficam por último, usam cor semântica e exigem confirmação.
+
+## Recuperação em listas
+
+- Busca atua apenas na lista aberta e mantém o contexto visível.
+- Chips mostram contagens por gênero para antecipar a composição da lista.
+- “Avaliados” aparece quando existem títulos avaliados e reduz esforço para reencontrar algo recomendável.
+- Favoritos sem avaliação continuam válidos; quando existe avaliação, o card mostra o grau de afinidade.
