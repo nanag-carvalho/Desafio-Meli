@@ -13,7 +13,7 @@ function AppHeader({
     <div
       data-slot="app-header"
       className={cn(
-        "flex min-h-14 w-full items-center gap-3 border-b border-border bg-background/90 px-4 backdrop-blur-xl",
+        "flex min-h-14 w-full items-center gap-3 bg-background/90 px-4 backdrop-blur-xl",
         className,
       )}
       {...props}

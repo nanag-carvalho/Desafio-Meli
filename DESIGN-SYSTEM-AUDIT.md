@@ -37,3 +37,4 @@ Transformar CommerceSheet em `PurchaseSheet` dentro de compositions, usando Shee
 - Níveis secundários compartilham um skeleton estrutural antes do conteúdo e sempre reiniciam no topo.
 - Bottom navigation sobrepõe o conteúdo sem criar uma faixa externa no viewport.
 - Sonner aparece dentro do shell, acima da navegação ou no rodapé dos níveis secundários.
+- App Header contextual separa níveis por superfície e espaçamento, sem divisor inferior.
