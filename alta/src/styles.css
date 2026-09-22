@@ -857,6 +857,13 @@ header > div {
   gap: var(--space-3);
   padding-bottom: var(--space-2);
 }
+.profile-subscription {
+  margin-top: var(--space-3);
+  border-color: var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  padding-inline: var(--space-3);
+}
 .profile-head h1,
 .profile-head p {
   margin: 0;

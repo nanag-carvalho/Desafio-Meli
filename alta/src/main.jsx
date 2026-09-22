@@ -1096,6 +1096,15 @@ function ProfilePage({ open, onDepthChange }) {
         </div>
       </div>
 
+      <Item
+        className="profile-subscription"
+        icon={CreditCard}
+        title="Meli+ e assinatura"
+        supporting="Consulte planos e benefícios no Mercado Livre"
+        disclosure
+        onClick={() => window.open("https://www.mercadolivre.com.br/assinaturas/melimais", "_blank", "noopener,noreferrer")}
+      />
+
       <section className="rail-section favorite-rail">
         <SectionHeader size="compact" title="Favoritos" actionLabel="Ver todos" onAction={() => { setViewingFavorites(true); onDepthChange(true); }} />
         <ScrollArea orientation="horizontal" className="rail-scroll">
