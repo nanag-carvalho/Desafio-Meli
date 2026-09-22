@@ -28,3 +28,7 @@ Transformar CommerceSheet em `PurchaseSheet` dentro de compositions, usando Shee
 - `Switch` representa estados binários persistentes sem fechar o contexto atual.
 - `Sonner` centraliza feedback transitório; toasts ficam limitados ao shell mobile.
 - `SectionHeader/size=sm` preserva a hierarquia de grupos dentro de sheets.
+- `SectionHeader/size=compact` padroniza títulos de seções densas com ações laterais.
+- `Chip/count` mantém a contagem em uma badge interna reutilizável.
+- `ParticipantRow` combina Avatar, papel e ação contextual na gestão de pessoas.
+- `Input` usa a mesma família de superfície dos demais controles do formulário.

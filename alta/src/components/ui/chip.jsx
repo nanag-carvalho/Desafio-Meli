@@ -1,8 +1,9 @@
 import * as React from "react";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "cn";
 
 const Chip = React.forwardRef(function Chip(
-  { className, selected = false, active, children, ...props },
+  { className, selected = false, active, count, children, ...props },
   ref,
 ) {
   return (
@@ -16,7 +17,16 @@ const Chip = React.forwardRef(function Chip(
       )}
       {...props}
     >
-      {children}
+      <span>{children}</span>
+      {count !== undefined ? (
+        <Badge
+          data-slot="chip-count"
+          variant="secondary"
+          className="ml-1 h-5 min-w-5 rounded-full border-0 bg-muted px-1.5 text-[length:var(--type-label-caption-size)] text-foreground group-data-selected/chip:bg-primary-foreground/14 group-data-selected/chip:text-primary-foreground"
+        >
+          {count}
+        </Badge>
+      ) : null}
     </button>
   );
 });

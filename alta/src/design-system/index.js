@@ -2,6 +2,7 @@ export { ActionTile } from "@/components/compositions/action-tile";
 export { AppHeader } from "@/components/compositions/app-header";
 export { InviteField } from "@/components/compositions/invite-field";
 export { ParticipantAvatar } from "@/components/compositions/participant-avatar";
+export { ParticipantRow } from "@/components/compositions/participant-row";
 export { BottomNavigationItem } from "@/components/compositions/bottom-navigation-item";
 export { MediaCard } from "@/components/compositions/media-card";
 export { MediaPlayer } from "@/components/compositions/media-player";

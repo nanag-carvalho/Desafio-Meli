@@ -46,7 +46,7 @@ import {
   MediaCard,
   MediaPlayer,
   OptionsSheet,
-  ParticipantAvatar,
+  ParticipantRow,
   QuickRecommendationCard,
   RatingAction,
   ScrollArea,
@@ -445,8 +445,8 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
           </label>
           <ChipRow>
             {filters.map((filter) => (
-              <Chip key={filter.label} active={listFilter === filter.label} onClick={() => setListFilter(filter.label)}>
-                {filter.label} <span>{filter.count}</span>
+              <Chip key={filter.label} count={filter.count} active={listFilter === filter.label} onClick={() => setListFilter(filter.label)}>
+                {filter.label}
               </Chip>
             ))}
           </ChipRow>
@@ -485,18 +485,18 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
                 <SheetDescription>Convide pessoas diretamente ou envie um link.</SheetDescription>
               </SheetHeader>
               <div className="member-manager">
-                <SectionHeader size="sm" level={3} title="Participantes" />
-                <div className="participant-strip" aria-label="Participantes da lista">
+                <SectionHeader size="sm" level={3} title="Convidar pessoas" />
+                <InviteField aria-label="Nome ou e-mail" placeholder="Nome ou e-mail" value={newMember} onChange={(event) => setNewMember(event.target.value)} onInvite={addMember} />
+                <SectionHeader size="sm" level={3} title="Compartilhar convite" />
+                <ShareChannels copied={inviteCopied} onSelect={(channel) => channel === "copy" ? copyInvite() : shareInvite()} />
+                <div className="member-list" aria-label="Participantes da lista">
+                  <SectionHeader size="sm" level={3} title={`Participantes · ${memberCount}`} />
                   {(collection.members ?? ["NC"]).map((member, index) => (
-                    <motion.div key={`${member}-${index}`} layout initial={{ opacity: 0, scale: 0.88 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.88 }}>
-                      <ParticipantAvatar initials={member} label={member === "NC" ? "Você" : member} owner={index === 0} onRemove={index === 0 ? undefined : () => applyUpdate({ ...collection, members: collection.members.filter((_, memberIndex) => memberIndex !== index) }, `${member} removido`)} />
+                    <motion.div key={`${member}-${index}`} layout initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}>
+                      <ParticipantRow initials={member} name={member === "NC" ? "Você" : member} owner={index === 0} onRemove={index === 0 ? undefined : () => applyUpdate({ ...collection, members: collection.members.filter((_, memberIndex) => memberIndex !== index) }, `${member} removido`)} />
                     </motion.div>
                   ))}
                 </div>
-                <SectionHeader size="sm" level={3} title="Convidar pessoas" />
-                <InviteField aria-label="Nome ou e-mail" placeholder="Nome ou e-mail" value={newMember} onChange={(event) => setNewMember(event.target.value)} onInvite={addMember} />
-                <SectionHeader size="sm" level={3} title="Ou compartilhe o convite" />
-                <ShareChannels copied={inviteCopied} onSelect={(channel) => channel === "copy" ? copyInvite() : shareInvite()} />
               </div>
             </SheetContent>
           </Sheet>
@@ -1076,11 +1076,10 @@ function ProfilePage({ open, onDepthChange }) {
       </div>
 
       <section className="rail-section favorite-rail">
-        <SectionHeader title="Favoritos" actionLabel="Ver todos" />
-        <p className="rail-reason">Afinidade rápida e um atalho para indicar sem procurar novamente</p>
+        <SectionHeader size="compact" title="Favoritos" actionLabel="Ver todos" />
         <ChipRow className="profile-chips">
-          <Chip active={favoriteFilter === "Todos"} onClick={() => setFavoriteFilter("Todos")}>Todos 3</Chip>
-          <Chip active={favoriteFilter === "Avaliados"} onClick={() => setFavoriteFilter("Avaliados")}>Avaliados 2</Chip>
+          <Chip count={3} active={favoriteFilter === "Todos"} onClick={() => setFavoriteFilter("Todos")}>Todos</Chip>
+          <Chip count={2} active={favoriteFilter === "Avaliados"} onClick={() => setFavoriteFilter("Avaliados")}>Avaliados</Chip>
         </ChipRow>
         <ScrollArea orientation="horizontal" className="rail-scroll">
           <div className="rail">
@@ -1102,6 +1101,7 @@ function ProfilePage({ open, onDepthChange }) {
 
       <section className="profile-section">
         <SectionHeader
+          size="compact"
           title="Listas"
           action={(
             <Button variant="link" size="sm" className="px-0" onClick={() => setCreatingList(true)}>
@@ -1109,9 +1109,6 @@ function ProfilePage({ open, onDepthChange }) {
             </Button>
           )}
         />
-        <p className="profile-section-description">
-          Crie quantas listas quiser. Cada uma pode ser privada ou compartilhada.
-        </p>
         <div className="profile-lists">
           {lists.map((list) => (
             <div className="list-item" key={list.name}>
@@ -1123,12 +1120,8 @@ function ProfilePage({ open, onDepthChange }) {
       </section>
 
       <section className="profile-section">
-        <div className="section-title">
-          <div>
-            <h2>Histórico</h2>
-            <p>Recupere o que assistiu e avaliou</p>
-          </div>
-        </div>
+        <SectionHeader size="compact" title="Histórico" />
+        <p className="profile-section-description">Recupere o que assistiu e avaliou</p>
         <ChipRow className="profile-chips">
           {["Todos", "Assistidos", "Avaliados", "Compras"].map((filter) => (
             <Chip

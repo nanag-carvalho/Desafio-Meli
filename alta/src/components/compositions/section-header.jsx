@@ -11,7 +11,7 @@ function SectionHeader({ className, title, action, actionLabel, onAction, level 
       data-slot="section-header"
       className={cn(
         "flex items-center justify-between gap-3",
-        size === "sm" ? "min-h-8" : "min-h-10",
+        size === "sm" ? "min-h-8" : size === "compact" ? "min-h-9" : "min-h-10",
         className,
       )}
     >
@@ -19,6 +19,8 @@ function SectionHeader({ className, title, action, actionLabel, onAction, level 
         "min-w-0 truncate",
         size === "sm"
           ? "text-[length:var(--type-body-emphasis-size)] leading-[var(--type-body-emphasis-line)] [font-weight:var(--type-body-emphasis-weight)]"
+          : size === "compact"
+            ? "text-[length:var(--type-h4-size)] leading-[var(--type-h4-line)] [font-weight:var(--type-h4-weight)]"
           : "text-[length:var(--type-h3-size)] leading-[var(--type-h3-line)] [font-weight:var(--type-h3-weight)]",
       )}>
         {title}

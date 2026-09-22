@@ -63,6 +63,7 @@ import { SectionHeader } from "@/components/compositions/section-header";
 import { QuickRecommendationCard } from "@/components/compositions/quick-recommendation-card";
 import { Avatar } from "@/components/ui/avatar";
 import { ParticipantAvatar } from "@/components/compositions/participant-avatar";
+import { ParticipantRow } from "@/components/compositions/participant-row";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import "./globals.css";
@@ -105,7 +106,7 @@ const specs = {
       "border/default · 1px",
       "color/primary no estado selected",
     ],
-    code: '<Chip state="active">Filmes</Chip>\n<Badge tone="success">Incluído</Badge>',
+    code: '<Chip active count={12}>Filmes</Chip>\n<Badge tone="success">Incluído</Badge>',
   },
   Field: {
     size: "40 px · label + help + error",
@@ -931,7 +932,7 @@ function Catalog() {
         <Block name="Chip and badge" meta="seleção, filtro e disponibilidade">
           <div className="state-row">
             <Chip>Filmes</Chip>
-            <Chip state="active">Filmes</Chip>
+            <Chip active count={12}>Filmes</Chip>
             <Chip state="disabled">Filmes</Chip>
             <Badge tone="success">Incluído</Badge>
             <Badge tone="brand">Alugar</Badge>
@@ -1069,6 +1070,8 @@ function Catalog() {
               <ParticipantAvatar initials="NC" label="Você" owner />
               <ParticipantAvatar initials="RA" label="RA" onRemove={() => {}} />
             </div>
+            <ParticipantRow initials="NC" name="Você" owner />
+            <ParticipantRow initials="RA" name="Rafaela" onRemove={() => {}} />
             <Item
               selectable
               title="Drama"
