@@ -60,6 +60,7 @@ import { RatingAction } from "@/components/compositions/rating-action";
 import { OptionsSheet } from "@/components/compositions/options-sheet";
 import { ShareSheet } from "@/components/compositions/share-sheet";
 import { SectionHeader } from "@/components/compositions/section-header";
+import { SearchField } from "@/components/compositions/search-field";
 import { QuickRecommendationCard } from "@/components/compositions/quick-recommendation-card";
 import { Avatar } from "@/components/ui/avatar";
 import { ParticipantAvatar } from "@/components/compositions/participant-avatar";
@@ -132,6 +133,16 @@ const specs = {
       "focus/ring · 2px / 35%",
     ],
     code: '<Input aria-label="Buscar" placeholder="Filme, pessoa ou gênero" />',
+  },
+  "Search field": {
+    size: "40 px · ícone 16 px",
+    tokens: [
+      "core/input",
+      "space/3 · ícone à esquerda",
+      "color/input + border",
+      "focus/ring · azul",
+    ],
+    code: '<SearchField placeholder="Filme, série, gênero ou uma pista" />',
   },
   Select: {
     size: "40 px · single choice",
@@ -684,6 +695,7 @@ function Catalog() {
             <a href="#scroll-area">Scroll area</a>
             <a href="#rating-popover">Popover</a>
             <span>COMPOSITIONS</span>
+            <a href="#search-field">Search field</a>
             <a href="#action-tile">Action tile</a>
             <a href="#app-header">App header</a>
             <a href="#bottom-navigation-item">Bottom navigation item</a>
@@ -973,6 +985,9 @@ function Catalog() {
               aria-label="Campo com erro"
             />
           </div>
+        </Block>
+        <Block name="Search field" meta="Input com ícone, sem superfície duplicada">
+          <SearchField placeholder="Filme, série, gênero ou uma pista" aria-label="Buscar no catálogo" />
         </Block>
         <Block name="Select" meta="uma escolha · variante do Dropdown">
           <DropdownSelect

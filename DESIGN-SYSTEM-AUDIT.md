@@ -32,3 +32,4 @@ Transformar CommerceSheet em `PurchaseSheet` dentro de compositions, usando Shee
 - `Chip/count` mantém a contagem em uma badge interna reutilizável.
 - `ParticipantRow` combina Avatar, papel e ação contextual na gestão de pessoas.
 - `Input`, `Select` e `Combobox` usam `input` como superfície comum, `border` discreta no repouso e `ring` azul apenas no foco.
+- `SearchField` compõe ícone e Input sem desenhar uma segunda superfície ao redor do campo.

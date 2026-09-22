@@ -55,8 +55,8 @@
   --accent-foreground: #fff;
   --destructive: #ff5b6b;
   /* Surface separators stay quiet; interactive controls need a clearer edge. */
-  --border: #2b313a;
-  --input: #46515e;
+  --border: #242a32;
+  --input: #272e38;
   --ring: #3483fa;
   --success: #2dc383;
   --warning: #ff7733;

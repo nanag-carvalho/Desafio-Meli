@@ -50,6 +50,7 @@ import {
   QuickRecommendationCard,
   RatingAction,
   ScrollArea,
+  SearchField,
   SectionHeader,
   ShareSheet as DSShareSheet,
   ShareChannels,
@@ -440,10 +441,7 @@ function CatalogView({ title, items, open, close, collection, filterable = false
       </div>
       {filteringEnabled ? (
         <div className="catalog-tools">
-          <label className="catalog-search">
-            <Search aria-hidden="true" />
-            <Input aria-label="Buscar nesta lista" placeholder="Buscar nesta lista" value={listQuery} onChange={(event) => setListQuery(event.target.value)} />
-          </label>
+          <SearchField aria-label="Buscar nesta lista" placeholder="Buscar nesta lista" value={listQuery} onChange={(event) => setListQuery(event.target.value)} />
           <ChipRow>
             {filters.map((filter) => (
               <Chip key={filter.label} count={filter.count} active={listFilter === filter.label} onClick={() => setListFilter(filter.label)}>
@@ -744,16 +742,14 @@ function SearchPage({ open }) {
   return (
     <main className="page-pad">
       <h1>Buscar</h1>
-      <label className="search">
-        <Search />
-        <Input
-          className="search-input"
-          autoFocus
-          placeholder="Filme, série, gênero ou uma pista"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-      </label>
+      <SearchField
+        className="search-page-field"
+        autoFocus
+        aria-label="Buscar no catálogo"
+        placeholder="Filme, série, gênero ou uma pista"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
       <ChipRow>
         {["Drama", "Comédia", "Ação", "Ficção", "Família"].map((x) => (
           <Chip key={x}>{x}</Chip>

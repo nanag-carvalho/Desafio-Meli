@@ -10,6 +10,7 @@ export { OptionsSheet } from "@/components/compositions/options-sheet";
 export { QuickRecommendationCard } from "@/components/compositions/quick-recommendation-card";
 export { RatingAction } from "@/components/compositions/rating-action";
 export { SectionHeader } from "@/components/compositions/section-header";
+export { SearchField } from "@/components/compositions/search-field";
 export { ShareSheet } from "@/components/compositions/share-sheet";
 export { ShareChannels } from "@/components/compositions/share-channels";
 
