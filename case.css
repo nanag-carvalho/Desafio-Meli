@@ -10,6 +10,7 @@
 .evidence-trace p,.evidence-caption{color:var(--muted);font-size:13px}
 .evidence-caption{margin:14px 0 0;padding:14px 16px;border-left:2px solid var(--blue);background:var(--surface)}
 .wireflow{background:linear-gradient(180deg,var(--bg),#10120c,var(--bg))}
+.wireflow-links{display:flex;flex-wrap:wrap;column-gap:var(--space-5);row-gap:var(--space-2)}
 .wireflow-map{display:grid;grid-template-columns:1fr auto 1fr auto 1.25fr auto 1fr;gap:12px;align-items:stretch;margin-top:48px}
 .wireflow-map article{min-width:0;padding:22px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md)}
 .wireflow-map strong,.wireflow-map small{display:block}
