@@ -26,4 +26,4 @@ Depois, acesse `http://127.0.0.1:8765/`.
 
 ## Publicação
 
-O workflow de GitHub Pages publica a raiz do repositório quando há push em `main`.
+O projeto é publicado pela Vercel a partir da raiz do repositório. Cada push em `main` atualiza o site de produção após a integração do repositório.
