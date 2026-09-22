@@ -595,7 +595,7 @@ function Header({ onProfile }) {
   return (
     <header>
       <b className="product-brand">
-        <span className="product-brand-mark" aria-hidden="true"><img src="./assets/mercado-livre-handshake-white.svg" alt="" /></span>
+        <span className="product-brand-mark" aria-hidden="true"><img src={`${import.meta.env.BASE_URL}assets/mercado-livre-handshake-white.svg`} alt="" /></span>
         <span>Mercado <i>Play</i></span>
       </b>
       <div>
