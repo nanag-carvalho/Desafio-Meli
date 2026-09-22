@@ -393,6 +393,14 @@ header > div {
 .favorite-rail .rail-scroll {
   height: 234px;
 }
+.rail-section:has([data-format="landscape"]) .rail-scroll {
+  height: calc(
+    var(--size-media-card-landscape-art) +
+    var(--type-body-emphasis-line) +
+    var(--type-label-muted-line) +
+    var(--space-3) + var(--space-3) + 2px
+  );
+}
 .prototype-media-card {
   scroll-snap-align: start;
 }
