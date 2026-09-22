@@ -928,62 +928,27 @@ nav button[data-active] {
   padding-inline: var(--prototype-gutter);
   background: color-mix(in srgb, var(--background) 96%, transparent);
 }
-.collection-context {
-  min-height: 64px;
-  margin-top: var(--space-4);
-  padding: var(--space-3);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--card);
-}
-.collection-privacy {
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-.collection-privacy-icon {
-  width: 40px;
-  height: 40px;
-  flex: none;
-  display: grid;
-  place-items: center;
-  border-radius: var(--radius-md);
-  background: var(--secondary);
-  color: var(--foreground);
-}
-.collection-privacy-icon svg { width: 18px; height: 18px; }
-.collection-privacy > span:last-child {
-  min-width: 0;
-  display: grid;
-  gap: var(--space-1);
-}
-.collection-privacy strong {
-  font-size: var(--type-body-emphasis-size);
-  line-height: var(--type-body-emphasis-line);
-  font-weight: var(--type-body-emphasis-weight);
-}
-.collection-privacy small {
-  color: var(--muted-foreground);
-  font-size: var(--type-label-small-size);
-  line-height: var(--type-label-small-line);
-}
 .collection-members {
   flex: none;
   display: flex;
   padding-left: var(--space-2);
 }
+.collection-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.collection-header-actions > [data-slot="icon-button"] {
+  border-color: var(--border);
+  background: var(--secondary);
+}
 .collection-members span {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   margin-left: calc(var(--space-2) * -1);
   display: grid;
   place-items: center;
-  border: 2px solid var(--card);
+  border: 2px solid var(--background);
   border-radius: var(--radius-full);
   background: var(--accent);
   color: var(--accent-foreground);

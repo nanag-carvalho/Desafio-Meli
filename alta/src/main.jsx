@@ -27,6 +27,8 @@ import {
   MoreHorizontal,
   UserPlus,
   ArrowLeft,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import "./globals.css";
 import "./styles.css";
@@ -329,6 +331,15 @@ function Rail({ title, children, reason, showAction = true, onAction }) {
 
 function CatalogView({ title, items, open, close, collection }) {
   const shared = collection?.type === "Compartilhada";
+  const supporting = collection
+    ? `${items.length} títulos · ${collection.type}${shared ? ` · ${collection.members?.length ?? 1} pessoas` : ""}`
+    : `${items.length} títulos disponíveis nesta seleção`;
+  const collectionOptions = collection ? [
+    { value: "rename", icon: Pencil, title: "Editar nome", supporting: "Atualize o nome desta lista" },
+    ...(shared ? [{ value: "members", icon: UserPlus, title: "Gerenciar participantes", supporting: "Convide ou remova pessoas" }] : []),
+    { value: "privacy", icon: Lock, title: "Alterar privacidade", supporting: shared ? "Tornar esta lista privada" : "Transformar em compartilhada" },
+    { value: "delete", icon: Trash2, title: "Excluir lista", supporting: "Remove a lista, sem afetar os títulos" },
+  ] : [];
   return (
     <motion.main
       className="catalog-view"
@@ -341,34 +352,28 @@ function CatalogView({ title, items, open, close, collection }) {
         <AppHeader
           className="catalog-app-header"
           title={title}
-          supporting={`${items.length} títulos disponíveis nesta seleção`}
+          supporting={supporting}
           leading={<IconButton label="Voltar" onClick={close}><ArrowLeft /></IconButton>}
-        />
-      </div>
-      {collection ? (
-        <section className="collection-context" aria-label="Informações da lista">
-          <div className="collection-privacy">
-            <span className="collection-privacy-icon" aria-hidden="true">
-              {shared ? <Users /> : <Lock />}
-            </span>
-            <span>
-              <strong>{collection.type}</strong>
-              <small>
-                {shared
-                  ? `${collection.members?.length ?? 1} pessoas podem adicionar títulos`
-                  : "Somente você pode ver e editar"}
-              </small>
-            </span>
-          </div>
-          {shared ? (
-            <div className="collection-members" aria-label="Participantes">
-              {(collection.members ?? ["NC"]).slice(0, 4).map((member, index) => (
-                <span key={`${member}-${index}`} title={member}>{member}</span>
-              ))}
+          actions={collection ? (
+            <div className="collection-header-actions">
+              {shared ? (
+                <div className="collection-members" aria-label="Participantes">
+                  {(collection.members ?? ["NC"]).slice(0, 3).map((member, index) => (
+                    <span key={`${member}-${index}`} title={member}>{member}</span>
+                  ))}
+                </div>
+              ) : null}
+              <OptionsSheet
+                withinContext
+                title="Opções da lista"
+                description={title}
+                options={collectionOptions}
+                trigger={<IconButton label="Opções da lista"><MoreHorizontal /></IconButton>}
+              />
             </div>
           ) : null}
-        </section>
-      ) : null}
+        />
+      </div>
       <div className="catalog-grid">
         {items.map((item, index) => (
           <Poster key={`${item.name}-${index}`} title={item} onOpen={open} />
