@@ -33,3 +33,7 @@ Transformar CommerceSheet em `PurchaseSheet` dentro de compositions, usando Shee
 - `ParticipantRow` combina Avatar, papel e ação contextual na gestão de pessoas.
 - `Input`, `Select` e `Combobox` usam `input` como superfície comum, `border` discreta no repouso e `ring` azul apenas no foco.
 - `SearchField` compõe ícone e Input sem desenhar uma segunda superfície ao redor do campo.
+- Detalhes usa `MediaPlayer/embedded`; posição de play e controles pertence ao componente.
+- Níveis secundários compartilham um skeleton estrutural antes do conteúdo e sempre reiniciam no topo.
+- Bottom navigation sobrepõe o conteúdo sem criar uma faixa externa no viewport.
+- Sonner aparece dentro do shell, acima da navegação ou no rodapé dos níveis secundários.

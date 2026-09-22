@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Send } from "lucide-react";
+import { Heart, Send, ThumbsDown, ThumbsUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "cn";
@@ -8,6 +8,12 @@ const sourceLabels = {
   rated: "Avaliado",
   favorite: "Favorito",
   history: "Assistido",
+};
+
+const ratingIcons = {
+  "Não é para mim": ThumbsDown,
+  Gostei: ThumbsUp,
+  Amei: Heart,
 };
 
 function QuickRecommendationCard({
@@ -21,6 +27,7 @@ function QuickRecommendationCard({
   onOpen,
   onRecommend,
 }) {
+  const RatingIcon = ratingIcons[rating];
   return (
     <article
       data-slot="quick-recommendation-card"
@@ -50,6 +57,7 @@ function QuickRecommendationCard({
         </Badge>
         {rating ? (
           <Badge tone="brand" className="absolute right-2 top-2">
+            {RatingIcon ? <RatingIcon aria-hidden="true" /> : null}
             {rating}
           </Badge>
         ) : null}

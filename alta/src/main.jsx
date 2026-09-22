@@ -322,6 +322,33 @@ function RouteSkeleton() {
     </motion.main>
   );
 }
+function SecondaryRouteSkeleton() {
+  return (
+    <motion.main
+      className="secondary-route-skeleton"
+      initial={{ opacity: 1 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      aria-label="Carregando conteúdo"
+      aria-busy="true"
+    >
+      <div className="secondary-skeleton-head">
+        <Skeleton className="secondary-skeleton-back" />
+        <div>
+          <Skeleton className="secondary-skeleton-title" />
+          <Skeleton className="secondary-skeleton-copy" />
+        </div>
+      </div>
+      <Skeleton className="secondary-skeleton-search" />
+      <div className="skeleton-chips">
+        {[0, 1, 2].map((item) => <Skeleton key={item} />)}
+      </div>
+      <div className="secondary-skeleton-grid">
+        {[0, 1, 2, 3].map((item) => <PosterSkeleton key={item} />)}
+      </div>
+    </motion.main>
+  );
+}
 function Rail({ title, children, reason, showAction = true, onAction }) {
   return (
     <section className="rail-section">
@@ -574,7 +601,7 @@ function Nav({ page, setPage }) {
     [Search, "Buscar", "search"],
   ];
   return (
-    <nav>
+    <nav className="bottom-navigation" aria-label="Navegação principal">
       {items.map(([I, l, k]) => (
         <BottomNavigationItem
           key={k}
@@ -908,7 +935,7 @@ function ScenePage({ open }) {
                     <IconButton
                       label={isSaved ? "Na lista" : "Adicionar à lista"}
                       active={isSaved}
-                      className="glass-icon-button"
+                      variant="glass"
                     >
                       {isSaved ? <Check /> : <Plus />}
                     </IconButton>
@@ -920,6 +947,7 @@ function ScenePage({ open }) {
                 <IconButton
                   label="Favoritar"
                   active={isFavorite}
+                  variant="glass"
                   onClick={() => toggleInSet(setFavorites, title.name)}
                 >
                   <Heart fill={isFavorite ? "currentColor" : "none"} />
@@ -927,13 +955,13 @@ function ScenePage({ open }) {
                 <small>{isFavorite ? "Favorito" : "Favoritar"}</small>
               </div>
               <div className="scene-action">
-                <IconButton label="Indicar" onClick={() => setShareTitle(title)}>
+                <IconButton variant="glass" label="Indicar" onClick={() => setShareTitle(title)}>
                   <Share2 />
                 </IconButton>
                 <small>Indicar</small>
               </div>
               <div className="scene-action">
-                <IconButton label="Detalhes" onClick={() => open(title)}>
+                <IconButton variant="glass" label="Detalhes" onClick={() => open(title)}>
                   <Info />
                 </IconButton>
                 <small>Detalhes</small>
@@ -1197,12 +1225,17 @@ function Detail({ title, sourceId, onClose }) {
           exit={{ y: "100%" }}
           transition={spring}
         >
-          <div className="detail-media">
-            <motion.img
-              layoutId={sourceId}
-              src={title.img}
-              alt=""
-              transition={{ type: "spring", stiffness: 360, damping: 34 }}
+          <motion.div
+            className="detail-media"
+            layoutId={sourceId}
+            transition={{ type: "spring", stiffness: 360, damping: 34 }}
+          >
+            <MediaPlayer
+              className="detail-player"
+              poster={title.img}
+              title={title.name}
+              progress={18}
+              variant="embedded"
             />
             <Dialog.Close
               className="close"
@@ -1211,10 +1244,7 @@ function Detail({ title, sourceId, onClose }) {
             >
               <X />
             </Dialog.Close>
-            <IconButton label="Reproduzir">
-              <Play fill="currentColor" />
-            </IconButton>
-          </div>
+          </motion.div>
           <motion.div
             className="detail-body"
             initial={{ opacity: 0, y: 12 }}
@@ -1591,16 +1621,38 @@ function App() {
   const [direction, setDirection] = useState(1);
   const [detail, setDetail] = useState(null);
   const [secondaryLevel, setSecondaryLevel] = useState(false);
+  const [secondaryPending, setSecondaryPending] = useState(false);
   const timerRef = useRef(null);
+  const secondaryTimerRef = useRef(null);
   const reduceMotion = useReducedMotion();
   const viewportDrag = useDragScroll(page === "scene");
 
-  useEffect(() => () => window.clearTimeout(timerRef.current), []);
+  useEffect(() => () => {
+    window.clearTimeout(timerRef.current);
+    window.clearTimeout(secondaryTimerRef.current);
+  }, []);
+
+  const changeDepth = (next) => {
+    window.clearTimeout(secondaryTimerRef.current);
+    viewportDrag.ref.current?.scrollTo({ top: 0, behavior: "auto" });
+    setSecondaryLevel(next);
+    if (!next) {
+      setSecondaryPending(false);
+      return;
+    }
+    setSecondaryPending(true);
+    secondaryTimerRef.current = window.setTimeout(
+      () => setSecondaryPending(false),
+      reduceMotion ? 80 : 260,
+    );
+  };
 
   const navigate = (nextPage) => {
     if (nextPage === page || nextPage === pendingPage) return;
     window.clearTimeout(timerRef.current);
+    window.clearTimeout(secondaryTimerRef.current);
     setSecondaryLevel(false);
+    setSecondaryPending(false);
     viewportDrag.ref.current?.scrollTo({ top: 0, behavior: "auto" });
     setDirection(
       pageOrder.indexOf(nextPage) > pageOrder.indexOf(page) ? 1 : -1,
@@ -1618,15 +1670,15 @@ function App() {
   const openTitle = (title, sourceId) => setDetail({ title, sourceId });
   const renderPage = () =>
     page === "home" ? (
-      <HomePage open={openTitle} onScene={() => navigate("scene")} onDepthChange={setSecondaryLevel} />
+      <HomePage open={openTitle} onScene={() => navigate("scene")} onDepthChange={changeDepth} />
     ) : page === "search" ? (
       <SearchPage open={openTitle} />
     ) : page === "scene" ? (
       <ScenePage open={openTitle} />
     ) : page === "store" ? (
-      <StorePage open={openTitle} onDepthChange={setSecondaryLevel} />
+      <StorePage open={openTitle} onDepthChange={changeDepth} />
     ) : (
-      <ProfilePage open={openTitle} onDepthChange={setSecondaryLevel} />
+      <ProfilePage open={openTitle} onDepthChange={changeDepth} />
     );
 
   return (
@@ -1657,6 +1709,9 @@ function App() {
             )}
           </AnimatePresence>
         </div>
+        <AnimatePresence>
+          {secondaryPending ? <SecondaryRouteSkeleton key="secondary-loading" /> : null}
+        </AnimatePresence>
         {!secondaryLevel ? <Nav page={pendingPage ?? page} setPage={navigate} /> : null}
         <AnimatePresence>
           {detail && (

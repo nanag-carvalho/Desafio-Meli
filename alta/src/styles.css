@@ -53,6 +53,32 @@ button {
   min-height: 100%;
   padding-bottom: 96px;
 }
+.secondary-route-skeleton {
+  position: absolute;
+  z-index: 7;
+  inset: 0;
+  padding: var(--space-4) var(--prototype-gutter) var(--space-6);
+  background: var(--background);
+}
+.secondary-skeleton-head {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.secondary-skeleton-head > div:last-child { display: grid; gap: var(--space-2); }
+.secondary-skeleton-back { width: 40px; height: 40px; border-radius: var(--radius-full); }
+.secondary-skeleton-title { width: 132px; height: 18px; }
+.secondary-skeleton-copy { width: 88px; height: 10px; }
+.secondary-skeleton-search { height: 40px; margin-top: var(--space-3); border-radius: var(--radius-md); }
+.secondary-route-skeleton .skeleton-chips { padding: var(--space-3) 0 0; }
+.secondary-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4) var(--space-3);
+  margin-top: var(--space-4);
+}
+.secondary-skeleton-grid .poster-art { width: 100%; }
 .skeleton-hero {
   height: 360px;
   border-radius: 0;
@@ -133,7 +159,7 @@ header > div {
   gap: 8px;
 }
 .viewport {
-  height: calc(100% - 72px);
+  height: 100%;
   overflow: auto;
   scrollbar-width: none;
   cursor: grab;
@@ -164,14 +190,14 @@ header > div {
   position: absolute !important;
   z-index: 90 !important;
   right: auto !important;
-  top: var(--space-4) !important;
-  bottom: auto !important;
+  top: auto !important;
+  bottom: 88px !important;
   left: var(--space-4) !important;
   width: calc(100% - (var(--space-4) * 2)) !important;
   transform: none !important;
 }
-.device:not(.secondary-level) [data-sonner-toaster] {
-  top: 72px !important;
+.device.secondary-level [data-sonner-toaster] {
+  bottom: var(--space-4) !important;
 }
 .device [data-sonner-toast] { width: 100%; }
 .device [data-slot="scroll-area-viewport"][data-drag-scroll] {
@@ -189,7 +215,7 @@ header > div {
 .chips::-webkit-scrollbar {
   display: none;
 }
-nav {
+.bottom-navigation {
   position: absolute;
   z-index: 9;
   bottom: 12px;
@@ -205,7 +231,7 @@ nav {
   backdrop-filter: blur(22px);
   box-shadow: 0 15px 35px #0009;
 }
-nav button {
+.bottom-navigation button {
   position: relative;
   isolation: isolate;
   border: 0;
@@ -217,30 +243,8 @@ nav button {
   align-items: center;
   justify-content: center;
 }
-nav button[data-active] {
+.bottom-navigation button[data-active] {
   color: var(--primary);
-}
-.icon-button,
-.glass-icon-button {
-  width: 40px;
-  height: 40px;
-  border: 1px solid #ffffff1e;
-  border-radius: 50%;
-  display: inline-grid;
-  place-items: center;
-  background: #22272eaa;
-  color: var(--foreground);
-  backdrop-filter: blur(10px);
-}
-.icon-button.active,
-.glass-icon-button[data-active] {
-  background: var(--primary);
-  color: var(--primary-foreground);
-}
-.glass-button {
-  background: #ffffff20;
-  color: white;
-  backdrop-filter: blur(12px);
 }
 .hero {
   height: 440px;
@@ -605,10 +609,6 @@ nav button[data-active] {
   text-align: center;
   text-shadow: 0 1px 8px #000;
 }
-.scene-action .icon-button[data-active] {
-  background: var(--primary);
-  color: var(--primary-foreground);
-}
 .scene-copy {
   position: absolute;
   z-index: 3;
@@ -689,27 +689,13 @@ nav button[data-active] {
   touch-action: auto;
 }
 .detail-media {
-  height: 310px;
+  min-height: 252px;
   position: relative;
 }
-.detail-media > img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.detail-media:after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(transparent, var(--background));
-}
-.detail-media > .icon-button,
-.detail-media > .glass-icon-button {
-  position: absolute;
-  z-index: 2;
-  right: var(--space-4);
-  top: 50%;
-  transform: translate(-50%, -50%);
+.detail-player {
+  min-height: 252px;
+  border: 0;
+  border-radius: 0;
 }
 .close {
   position: absolute;
@@ -802,28 +788,6 @@ nav button[data-active] {
 .detail-tabs .rail-section {
   width: calc(100% + (var(--prototype-gutter) * 2));
   margin-inline: calc(var(--prototype-gutter) * -1);
-}
-.rating {
-  z-index: 30;
-  padding: 5px;
-  border-radius: 13px;
-  background: var(--popover);
-  box-shadow: 0 10px 30px #000;
-}
-.rating button {
-  border: 0;
-  background: transparent;
-  padding: 8px;
-  font-size: var(--type-h2-size);
-  line-height: var(--type-h2-line);
-  font-weight: var(--type-h2-weight);
-  border-radius: 8px;
-}
-.rating button:hover {
-  background: var(--muted);
-}
-.arrow {
-  fill: var(--popover);
 }
 .share-sheet {
   position: absolute;
