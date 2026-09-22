@@ -31,4 +31,4 @@ Transformar CommerceSheet em `PurchaseSheet` dentro de compositions, usando Shee
 - `SectionHeader/size=compact` padroniza títulos de seções densas com ações laterais.
 - `Chip/count` mantém a contagem em uma badge interna reutilizável.
 - `ParticipantRow` combina Avatar, papel e ação contextual na gestão de pessoas.
-- `Input` e `Select` usam `card` como superfície, `border` no repouso e `ring` azul apenas no foco.
+- `Input` e `Select` usam a mesma superfície `secondary/60`, `border` discreta no repouso e `ring` azul apenas no foco.
