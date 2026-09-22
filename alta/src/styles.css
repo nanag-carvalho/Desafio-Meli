@@ -140,6 +140,9 @@ header > div {
   overscroll-behavior: contain;
   touch-action: pan-y;
 }
+.device.secondary-level .viewport {
+  height: 100%;
+}
 .viewport[data-dragging],
 .detail[data-dragging] {
   cursor: grabbing;
@@ -909,7 +912,7 @@ nav button[data-active] {
 }
 .catalog-view {
   min-height: 100%;
-  padding: 0 var(--prototype-gutter) 112px;
+  padding: 0 var(--prototype-gutter) var(--space-6);
   background: var(--background);
 }
 .catalog-head {

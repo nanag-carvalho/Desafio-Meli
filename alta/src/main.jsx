@@ -423,7 +423,7 @@ function Nav({ page, setPage }) {
     </nav>
   );
 }
-function HomePage({ open, onScene }) {
+function HomePage({ open, onScene, onDepthChange }) {
   const [filter, setFilter] = useState("Tudo");
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [showCatalog, setShowCatalog] = useState(false);
@@ -439,7 +439,7 @@ function HomePage({ open, onScene }) {
         title={filter === "Tudo" ? "Para você" : filter}
         items={filteredCatalog}
         open={open}
-        close={() => setShowCatalog(false)}
+        close={() => { setShowCatalog(false); onDepthChange(false); }}
       />
     );
   }
@@ -496,7 +496,7 @@ function HomePage({ open, onScene }) {
             ? "Curadoria baseada no histórico e nos seus interesses"
             : `${filteredCatalog.length} opções no catálogo`
         }
-        onAction={() => setShowCatalog(true)}
+        onAction={() => { setShowCatalog(true); onDepthChange(true); }}
       >
         {filteredCatalog.slice(0, 6).map((t) => (
           <Poster
@@ -798,7 +798,7 @@ function ScenePage({ open }) {
     </main>
   );
 }
-function StorePage({ open }) {
+function StorePage({ open, onDepthChange }) {
   const [filter, setFilter] = useState("Explorar");
   const [showCatalog, setShowCatalog] = useState(false);
   const storeItems = catalog.map((item, index) => ({
@@ -817,7 +817,7 @@ function StorePage({ open }) {
         title={filter === "Explorar" ? "Catálogo da Loja" : filter}
         items={filtered}
         open={openOffer}
-        close={() => setShowCatalog(false)}
+        close={() => { setShowCatalog(false); onDepthChange(false); }}
       />
     );
   }
@@ -833,7 +833,7 @@ function StorePage({ open }) {
           <Chip key={item} active={filter === item} onClick={() => setFilter(item)}>{item}</Chip>
         ))}
       </ChipRow>
-      <Rail title={filter === "Explorar" ? "Mais alugados" : `${filter} agora`} onAction={() => setShowCatalog(true)}>
+      <Rail title={filter === "Explorar" ? "Mais alugados" : `${filter} agora`} onAction={() => { setShowCatalog(true); onDepthChange(true); }}>
         {filtered.slice(0, 5).map((t, index) => (
           <Poster
             key={t.name}
@@ -848,7 +848,7 @@ function StorePage({ open }) {
           <Poster key={t.name} title={t} format="landscape" layoutId={`store-family-${index}`} onOpen={openOffer} />
         ))}
       </Rail>
-      <Rail title="Lançamentos para comprar" reason="Novidades que permanecem na biblioteca" onAction={() => { setFilter("Comprar"); setShowCatalog(true); }}>
+      <Rail title="Lançamentos para comprar" reason="Novidades que permanecem na biblioteca" onAction={() => { setFilter("Comprar"); setShowCatalog(true); onDepthChange(true); }}>
         {storeItems.filter((item) => item.offerType === "Comprar").slice(0, 4).map((t, index) => (
           <Poster key={t.name} title={t} layoutId={`store-buy-${index}`} onOpen={openOffer} />
         ))}
@@ -867,7 +867,7 @@ function StorePage({ open }) {
   );
 }
 
-function ProfilePage({ open }) {
+function ProfilePage({ open, onDepthChange }) {
   const [historyFilter, setHistoryFilter] = useState("Todos");
   const [shareTitle, setShareTitle] = useState(null);
   const [createdLists, setCreatedLists] = useState([]);
@@ -884,7 +884,7 @@ function ProfilePage({ open }) {
         title={selectedList.name}
         items={selectedList.items}
         open={open}
-        close={() => setSelectedList(null)}
+        close={() => { setSelectedList(null); onDepthChange(false); }}
       />
     );
   }
@@ -932,7 +932,7 @@ function ProfilePage({ open }) {
         </p>
         <div className="profile-lists">
           <div className="list-item">
-            <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => setSelectedList({ name: "Quero assistir", items: catalog.slice(0, 6) })}>
+            <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => { setSelectedList({ name: "Quero assistir", items: catalog.slice(0, 6) }); onDepthChange(true); }}>
             <ListVideo />
             <span>
               <strong>Quero assistir</strong>
@@ -942,7 +942,7 @@ function ProfilePage({ open }) {
             <OptionsSheet withinContext title="Opções da lista" description="Organize, compartilhe ou altere a privacidade." options={listMenu("Quero assistir")} trigger={<IconButton label="Opções"><MoreHorizontal /></IconButton>} />
           </div>
           <div className="list-item">
-            <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => setSelectedList({ name: "Noite em família", items: catalog.slice(2, 7) })}>
+            <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => { setSelectedList({ name: "Noite em família", items: catalog.slice(2, 7) }); onDepthChange(true); }}>
             <Users />
             <span>
               <strong>Noite em família</strong>
@@ -953,7 +953,7 @@ function ProfilePage({ open }) {
           </div>
           {createdLists.map((list) => (
             <div className="list-item" key={list.name}>
-              <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => setSelectedList({ name: list.name, items: [] })}><Lock /><span><strong>{list.name}</strong><small>{list.type} · {list.count} títulos</small></span></motion.button>
+              <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => { setSelectedList({ name: list.name, items: [] }); onDepthChange(true); }}><Lock /><span><strong>{list.name}</strong><small>{list.type} · {list.count} títulos</small></span></motion.button>
               <OptionsSheet withinContext title="Opções da lista" description="A lista pode evoluir com você." options={listMenu(list.name)} trigger={<IconButton label="Opções"><MoreHorizontal /></IconButton>} />
             </div>
           ))}
@@ -1429,6 +1429,7 @@ function App() {
   const [pendingPage, setPendingPage] = useState(null);
   const [direction, setDirection] = useState(1);
   const [detail, setDetail] = useState(null);
+  const [secondaryLevel, setSecondaryLevel] = useState(false);
   const timerRef = useRef(null);
   const reduceMotion = useReducedMotion();
   const viewportDrag = useDragScroll(page === "scene");
@@ -1438,6 +1439,7 @@ function App() {
   const navigate = (nextPage) => {
     if (nextPage === page || nextPage === pendingPage) return;
     window.clearTimeout(timerRef.current);
+    setSecondaryLevel(false);
     viewportDrag.ref.current?.scrollTo({ top: 0, behavior: "auto" });
     setDirection(
       pageOrder.indexOf(nextPage) > pageOrder.indexOf(page) ? 1 : -1,
@@ -1455,21 +1457,21 @@ function App() {
   const openTitle = (title, sourceId) => setDetail({ title, sourceId });
   const renderPage = () =>
     page === "home" ? (
-      <HomePage open={openTitle} onScene={() => navigate("scene")} />
+      <HomePage open={openTitle} onScene={() => navigate("scene")} onDepthChange={setSecondaryLevel} />
     ) : page === "search" ? (
       <SearchPage open={openTitle} />
     ) : page === "scene" ? (
       <ScenePage open={openTitle} />
     ) : page === "store" ? (
-      <StorePage open={openTitle} />
+      <StorePage open={openTitle} onDepthChange={setSecondaryLevel} />
     ) : (
-      <ProfilePage open={openTitle} />
+      <ProfilePage open={openTitle} onDepthChange={setSecondaryLevel} />
     );
 
   return (
     <div className="workspace">
-      <div className="device">
-        <Header onProfile={() => navigate("profile")} />
+      <div className={`device${secondaryLevel ? " secondary-level" : ""}`}>
+        {!secondaryLevel ? <Header onProfile={() => navigate("profile")} /> : null}
         <div className="viewport" {...viewportDrag}>
           <AnimatePresence mode="wait" custom={direction}>
             {pendingPage ? (
@@ -1494,7 +1496,7 @@ function App() {
             )}
           </AnimatePresence>
         </div>
-        <Nav page={pendingPage ?? page} setPage={navigate} />
+        {!secondaryLevel ? <Nav page={pendingPage ?? page} setPage={navigate} /> : null}
         <AnimatePresence>
           {detail && (
             <Detail
