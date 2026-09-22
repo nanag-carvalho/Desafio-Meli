@@ -63,12 +63,7 @@ function ShareSheet({
       <SheetContent
         side="bottom"
         portalContainer={portalContainer}
-        className="mx-auto max-w-[420px] rounded-t-2xl border border-b-0 border-border bg-popover pb-[max(var(--space-4),env(safe-area-inset-bottom))]"
       >
-        <span
-          className="mx-auto mt-2 h-1 w-10 rounded-full bg-muted-foreground/45"
-          aria-hidden="true"
-        />
         <SheetHeader className="pb-2">
           <SheetTitle>Indicar título</SheetTitle>
           <SheetDescription>{description}</SheetDescription>

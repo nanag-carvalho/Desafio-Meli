@@ -1048,6 +1048,7 @@ function Catalog() {
               thumbnail={art}
               title="Cidade Luz"
               supporting="Comédia · 1h 51min"
+              disclosure
             />
             <Item
               icon={FolderHeart}

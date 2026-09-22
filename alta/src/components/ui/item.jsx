@@ -11,6 +11,7 @@ function Item({
   trailing,
   selectable = false,
   selected = false,
+  disclosure = false,
   onClick,
   ...props
 }) {
@@ -58,9 +59,9 @@ function Item({
             ) : (
               <CircleIcon className="size-4 shrink-0 text-muted-foreground" />
             )
-          ) : (
+          ) : disclosure ? (
             <ChevronRightIcon className="size-4 shrink-0 text-muted-foreground" />
-          ))}
+          ) : null)}
       </span>
     </Comp>
   );

@@ -21,3 +21,10 @@ Escala: **0** sem problema, **1** cosmético, **2** moderado, **3** grave, **4**
 2. Medir se convite por link é encontrado antes da opção direta em cenários de grupo.
 3. Verificar se a confirmação de exclusão reduz erro sem adicionar fricção excessiva.
 4. Testar compreensão da diferença entre favorito, lista privada e lista compartilhada.
+
+## Regra de navegação em linhas
+
+- Chevron comunica navegação ou abertura de uma tarefa com conteúdo próprio.
+- Marcador circular comunica seleção dentro do contexto atual.
+- Ações imediatas não recebem chevron; o feedback confirma o resultado.
+- Ações destrutivas ficam por último, usam cor semântica e exigem confirmação.

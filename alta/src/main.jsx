@@ -167,6 +167,7 @@ const listOptions = [
     icon: Plus,
     title: "Criar nova lista",
     supporting: "Privada ou compartilhada",
+    disclosure: true,
   },
 ];
 const spring = { type: "spring", stiffness: 420, damping: 32 };
@@ -381,8 +382,8 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
     </span>
   ) : `${items.length} títulos disponíveis nesta seleção`;
   const collectionOptions = collection ? [
-    { value: "rename", icon: Pencil, title: "Editar nome", supporting: "Atualize o nome desta lista", onSelect: () => setEditingName(true) },
-    ...(shared ? [{ value: "members", icon: UserPlus, title: "Gerenciar participantes", supporting: "Convide ou remova pessoas", onSelect: () => setManagingMembers(true) }] : []),
+    { value: "rename", icon: Pencil, title: "Editar nome", supporting: "Atualize o nome desta lista", disclosure: true, onSelect: () => setEditingName(true) },
+    ...(shared ? [{ value: "members", icon: UserPlus, title: "Gerenciar participantes", supporting: "Convide ou remova pessoas", disclosure: true, onSelect: () => setManagingMembers(true) }] : []),
     { value: "privacy", icon: Lock, title: "Alterar privacidade", supporting: shared ? "Tornar esta lista privada" : "Transformar em compartilhada", onSelect: () => applyUpdate({ ...collection, type: shared ? "Privada" : "Compartilhada", members: shared ? undefined : ["NC"] }, shared ? "Lista agora é privada" : "Lista agora é compartilhada") },
     { value: "delete", icon: Trash2, title: "Excluir lista", supporting: "Remove a lista, sem afetar os títulos", tone: "destructive", onSelect: () => setConfirmingDelete(true) },
   ] : [];
@@ -436,7 +437,7 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
       {collection ? (
         <>
           <Sheet open={editingName} onOpenChange={setEditingName}>
-            <SheetContent side="bottom" portalContainer={document.querySelector(".device")} className="mx-auto max-w-[420px] rounded-t-2xl border border-b-0 border-border bg-popover pb-[max(var(--space-6),env(safe-area-inset-bottom))]">
+            <SheetContent side="bottom" portalContainer={document.querySelector(".device")}>
               <SheetHeader>
                 <SheetTitle>Editar nome</SheetTitle>
                 <SheetDescription>Use um nome curto que explique o objetivo da lista.</SheetDescription>
@@ -448,7 +449,7 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
             </SheetContent>
           </Sheet>
           <Sheet open={managingMembers} onOpenChange={setManagingMembers}>
-            <SheetContent side="bottom" portalContainer={document.querySelector(".device")} className="mx-auto max-w-[420px] rounded-t-2xl border border-b-0 border-border bg-popover">
+            <SheetContent side="bottom" portalContainer={document.querySelector(".device")}>
               <SheetHeader>
                 <SheetTitle>Participantes</SheetTitle>
                 <SheetDescription>Quem participa pode adicionar e remover títulos.</SheetDescription>
@@ -479,7 +480,7 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
             </SheetContent>
           </Sheet>
           <Sheet open={confirmingDelete} onOpenChange={setConfirmingDelete}>
-            <SheetContent side="bottom" portalContainer={document.querySelector(".device")} className="mx-auto max-w-[420px] rounded-t-2xl border border-b-0 border-border bg-popover">
+            <SheetContent side="bottom" portalContainer={document.querySelector(".device")}>
               <SheetHeader>
                 <SheetTitle>Excluir “{title}”?</SheetTitle>
                 <SheetDescription>Os títulos continuam disponíveis no catálogo e no histórico.</SheetDescription>
@@ -504,9 +505,7 @@ function CreateListSheet({ close, onCreate }) {
       <SheetContent
         side="bottom"
         portalContainer={document.querySelector(".device")}
-        className="mx-auto max-w-[420px] rounded-t-2xl border border-b-0 border-border bg-popover pb-[max(var(--space-4),env(safe-area-inset-bottom))]"
       >
-        <span className="mx-auto mt-2 h-1 w-10 rounded-full bg-muted-foreground/45" aria-hidden="true" />
         <SheetHeader className="pb-2">
           <SheetTitle>Criar lista</SheetTitle>
           <SheetDescription>Organize para você ou convide pessoas.</SheetDescription>
@@ -1030,7 +1029,7 @@ function ProfilePage({ open, onDepthChange }) {
   };
   const openList = (list) => { setSelectedList(list); onDepthChange(true); };
   const listMenu = (list) => [
-    { value: "open", icon: ListVideo, title: "Abrir lista", supporting: `Ver títulos de ${list.name}`, onSelect: () => openList(list) },
+    { value: "open", icon: ListVideo, title: "Abrir lista", supporting: `Ver títulos de ${list.name}`, disclosure: true, onSelect: () => openList(list) },
     { value: "invite", icon: UserPlus, title: "Convidar pessoas", supporting: "Transforma em compartilhada", onSelect: () => updateList({ ...list, type: "Compartilhada", members: list.members ?? ["NC"] }) },
     { value: "privacy", icon: Lock, title: "Privacidade", supporting: list.type, onSelect: () => updateList({ ...list, type: list.type === "Privada" ? "Compartilhada" : "Privada", members: list.type === "Privada" ? ["NC"] : undefined }) },
   ];
