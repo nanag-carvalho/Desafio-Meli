@@ -666,7 +666,7 @@ function Catalog() {
     <div className="docs-shell">
       <aside className="doc-nav">
         <div className="side-brand">
-          <div className="ds-mark">MP</div>
+          <div className="ds-mark"><img src={`${import.meta.env.BASE_URL}assets/mercado-livre-handshake-white.svg`} alt="" /></div>
           <div>
             <b>Mercado Play</b>
             <small>Design System · 0.2</small>
