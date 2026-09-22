@@ -1,6 +1,6 @@
 .DS_Store
 **/.DS_Store
 alta/node_modules/
-alta/dist/
 historico-v1/
 *.log
+.vercel
