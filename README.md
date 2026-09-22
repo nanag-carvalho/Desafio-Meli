@@ -58,3 +58,6 @@ npm run dev
 ## Alcance da validação
 
 Os depoimentos e a queda de frequência citados no desafio são contexto fornecido no briefing. A revisão de interface e do fluxo foi feita pela autora; não houve teste com participantes externos nem medição de impacto no produto. Catálogo, preços, transações e colaboração são simulações para avaliar a experiência.
+# Publicação
+
+Use `bash scripts/deploy-production.sh` para publicar o case e o protótipo. O comando parte de `origin/main`, prepara uma cópia temporária apenas com os arquivos públicos e não inclui rascunhos de apresentação. Requer autenticação no Vercel e o vínculo local em `.vercel/project.json`.
