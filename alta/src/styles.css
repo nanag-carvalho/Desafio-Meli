@@ -150,6 +150,22 @@ header b {
   font-weight: var(--type-h3-weight);
   letter-spacing: var(--type-h3-tracking);
 }
+.product-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.product-brand-mark {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.product-brand-mark svg { width: 17px; height: 17px; stroke-width: 2.2; }
 header b i {
   color: var(--primary);
   font-style: normal;
@@ -1379,6 +1395,38 @@ header > div {
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
 }
+.notes h3 {
+  margin: var(--space-5) 0 var(--space-2);
+  font-size: var(--type-label-small-size);
+  line-height: var(--type-label-small-line);
+  font-weight: var(--type-label-small-weight);
+}
+.validation-scope {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-4);
+}
+.validation-scope span {
+  color: var(--primary);
+  font-size: var(--type-label-caption-size);
+  line-height: var(--type-label-caption-line);
+  font-weight: var(--type-label-small-weight);
+}
+.validation-scope p {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.validation-paths {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted-foreground);
+  font-size: var(--type-label-muted-size);
+  line-height: var(--type-body-line);
+}
+.validation-paths li + li { margin-top: var(--space-1); }
+.notes small strong { color: var(--foreground); }
 @media (max-width: 1040px) {
   .workspace {
     grid-template-columns: 390px minmax(260px, 300px);

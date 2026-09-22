@@ -29,6 +29,7 @@ import {
   ArrowLeft,
   Pencil,
   Trash2,
+  Handshake,
 } from "lucide-react";
 import "./globals.css";
 import "./styles.css";
@@ -579,8 +580,9 @@ function CreateListSheet({ close, onCreate }) {
 function Header({ onProfile }) {
   return (
     <header>
-      <b>
-        mercado <i>play</i>
+      <b className="product-brand">
+        <span className="product-brand-mark" aria-hidden="true"><Handshake /></span>
+        <span>Mercado <i>Play</i></span>
       </b>
       <div>
         <IconButton label="Transmitir">
@@ -1725,28 +1727,23 @@ function App() {
         <Toaster />
       </div>
       <aside className="notes">
-        <Badge tone="brand">ALTA · V2</Badge>
-        <h2>Decisões visíveis</h2>
-        <p>
-          Home estabelece o contexto antes de indicação. O conteúdo orienta a
-          decisão com motivo e acesso.
-        </p>
-        <p>
-          Em cena usa gesto vertical e ações rápidas para alimentar o motor sem
-          questionário.
-        </p>
-        <p>
-          Loja separa catálogo e transação, mantendo preço e condição antes do
-          compromisso.
-        </p>
-        <p>
-          Favorito registra afinidade; lista organiza. Avaliação tem três
-          respostas num popover curto.
-        </p>
-        <small>
-          Componentes do DS aplicados à experiência, com estados de loading,
-          transições, listas, histórico e loja.
-        </small>
+        <Badge tone="brand">GUIA DE VALIDAÇÃO</Badge>
+        <h2>O que este protótipo cobre</h2>
+        <div className="validation-scope">
+          <span>Escolher</span><p>Início, busca por pista e prévias em Em cena.</p>
+          <span>Contribuir</span><p>Favoritar, avaliar, organizar em listas e indicar.</p>
+          <span>Acessar</span><p>Conteúdo incluído, aluguel e próximo passo visíveis.</p>
+        </div>
+        <h3>Percursos para revisar</h3>
+        <ol className="validation-paths">
+          <li>Encontre um título sem saber o nome.</li>
+          <li>Diferencie favorito, avaliação e lista.</li>
+          <li>Crie uma lista e convide uma pessoa.</li>
+          <li>Explique preço e disponibilidade.</li>
+        </ol>
+        <h3>Observe</h3>
+        <p>Primeiro caminho, desvios, retornos, feedback percebido e termos que geram dúvida.</p>
+        <small><strong>Limite:</strong> títulos, transações, sincronização e recomendação são simulados.</small>
       </aside>
     </div>
   );
