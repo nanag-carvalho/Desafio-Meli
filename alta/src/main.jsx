@@ -182,15 +182,9 @@ const pageOrder = ["home", "store", "scene", "search", "profile"];
 const routeVariants = {
   enter: (direction) => ({
     opacity: 0,
-    x: direction * 28,
-    filter: "blur(3px)",
+    x: direction * 12,
   }),
-  center: { opacity: 1, x: 0, filter: "blur(0px)" },
-  exit: (direction) => ({
-    opacity: 0,
-    x: direction * -20,
-    filter: "blur(2px)",
-  }),
+  center: { opacity: 1, x: 0 },
 };
 
 function useDragScroll(disabled = false, axis = "y") {
@@ -295,33 +289,6 @@ function PosterSkeleton() {
   );
 }
 
-function RouteSkeleton() {
-  return (
-    <motion.main
-      className="route-skeleton"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      aria-label="Carregando conteúdo"
-      aria-busy="true"
-    >
-      <Skeleton className="skeleton-hero" />
-      <div className="skeleton-chips">
-        {[0, 1, 2, 3].map((item) => (
-          <Skeleton key={item} />
-        ))}
-      </div>
-      <div className="skeleton-section">
-        <Skeleton className="skeleton-heading" />
-        <div className="rail">
-          {[0, 1, 2].map((item) => (
-            <PosterSkeleton key={item} />
-          ))}
-        </div>
-      </div>
-    </motion.main>
-  );
-}
 function SecondaryRouteSkeleton() {
   return (
     <motion.main
@@ -1633,19 +1600,16 @@ function DSPreview() {
 
 function App() {
   const [page, setPage] = useState("home");
-  const [pendingPage, setPendingPage] = useState(null);
   const [direction, setDirection] = useState(1);
   const [detail, setDetail] = useState(null);
   const [secondaryLevel, setSecondaryLevel] = useState(false);
   const [secondaryPending, setSecondaryPending] = useState(false);
   const [guidedFlow, setGuidedFlow] = useState("choose");
-  const timerRef = useRef(null);
   const secondaryTimerRef = useRef(null);
   const reduceMotion = useReducedMotion();
   const viewportDrag = useDragScroll(page === "scene");
 
   useEffect(() => () => {
-    window.clearTimeout(timerRef.current);
     window.clearTimeout(secondaryTimerRef.current);
   }, []);
 
@@ -1665,8 +1629,7 @@ function App() {
   };
 
   const navigate = (nextPage) => {
-    if (nextPage === page || nextPage === pendingPage) return;
-    window.clearTimeout(timerRef.current);
+    if (nextPage === page) return;
     window.clearTimeout(secondaryTimerRef.current);
     setSecondaryLevel(false);
     setSecondaryPending(false);
@@ -1674,14 +1637,7 @@ function App() {
     setDirection(
       pageOrder.indexOf(nextPage) > pageOrder.indexOf(page) ? 1 : -1,
     );
-    setPendingPage(nextPage);
-    timerRef.current = window.setTimeout(
-      () => {
-        setPage(nextPage);
-        setPendingPage(null);
-      },
-      reduceMotion ? 80 : 360,
-    );
+    setPage(nextPage);
   };
 
   const openTitle = (title, sourceId) => setDetail({ title, sourceId });
@@ -1699,7 +1655,7 @@ function App() {
     if (flow.detail) {
       window.setTimeout(
         () => setDetail({ title: titles[0], sourceId: "guided-detail" }),
-        reduceMotion ? 100 : 440,
+        reduceMotion ? 0 : 180,
       );
     }
     toast.info(`${flow.hypothesis} · ${flow.title}`);
@@ -1720,35 +1676,28 @@ function App() {
   return (
     <div className="workspace">
       <div className={`device${secondaryLevel ? " secondary-level" : ""}`}>
-        {!secondaryLevel ? <Header onProfile={() => navigate("profile")} /> : null}
+        {page === "home" && !secondaryLevel ? <Header onProfile={() => navigate("profile")} /> : null}
         <div className="viewport" {...viewportDrag}>
-          <AnimatePresence mode="wait" custom={direction}>
-            {pendingPage ? (
-              <RouteSkeleton key={`loading-${pendingPage}`} />
-            ) : (
-              <motion.div
-                key={page}
-                className="route-stage"
-                custom={direction}
-                variants={routeVariants}
-                initial={reduceMotion ? false : "enter"}
-                animate="center"
-                exit={reduceMotion ? undefined : "exit"}
-                transition={
-                  reduceMotion
-                    ? { duration: 0 }
-                    : { duration: 0.28, ease: [0.22, 1, 0.36, 1] }
-                }
-              >
-                {renderPage()}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <motion.div
+            key={page}
+            className="route-stage"
+            custom={direction}
+            variants={routeVariants}
+            initial={reduceMotion ? false : "enter"}
+            animate="center"
+            transition={
+              reduceMotion
+                ? { duration: 0 }
+                : { duration: 0.18, ease: [0.22, 1, 0.36, 1] }
+            }
+          >
+            {renderPage()}
+          </motion.div>
         </div>
         <AnimatePresence>
           {secondaryPending ? <SecondaryRouteSkeleton key="secondary-loading" /> : null}
         </AnimatePresence>
-        {!secondaryLevel ? <Nav page={pendingPage ?? page} setPage={navigate} /> : null}
+        {!secondaryLevel ? <Nav page={page} setPage={navigate} /> : null}
         <AnimatePresence>
           {detail && (
             <Detail

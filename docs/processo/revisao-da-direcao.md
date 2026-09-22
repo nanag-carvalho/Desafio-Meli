@@ -1,6 +1,6 @@
 # Registro da revisão estruturada e mudança de direção
 
-**Nota de versão:** as hipóteses intermediárias abaixo registram a mudança da V1 para a V2. A formulação atual, agrupada em três oportunidades e H1–H8, está na [árvore de oportunidades](22-arvore-de-oportunidades.html) e na [síntese do case](10-documentacao.html).
+**Nota de versão:** as hipóteses intermediárias abaixo registram a mudança da V1 para a V2. A formulação atual, agrupada em três oportunidades e H1–H8, está na [árvore de oportunidades](../../arvore-de-oportunidades.html) e na [síntese do case](../../raciocinio-de-design.html).
 
 **20 set 2026 · Fonte:** revisão estruturada da própria autora sobre o wireflow e a demo visual. **Não houve participantes externos.** Os pontos abaixo são achados de avaliação de design; ainda não validam comportamento de outras pessoas ou impacto no produto.
 

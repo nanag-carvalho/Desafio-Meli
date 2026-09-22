@@ -49,10 +49,6 @@ button {
   z-index: 2;
   border-radius: inherit;
 }
-.route-skeleton {
-  min-height: 100%;
-  padding-bottom: 96px;
-}
 .secondary-route-skeleton {
   position: absolute;
   z-index: 7;
@@ -79,10 +75,6 @@ button {
   margin-top: var(--space-4);
 }
 .secondary-skeleton-grid .poster-art { width: 100%; }
-.skeleton-hero {
-  height: 360px;
-  border-radius: 0;
-}
 .skeleton-chips {
   display: flex;
   gap: var(--space-2);
@@ -92,14 +84,6 @@ button {
   width: 72px;
   height: 34px;
   border-radius: var(--radius-full);
-}
-.skeleton-section {
-  padding: var(--space-5) 0 0 var(--prototype-gutter);
-}
-.skeleton-heading {
-  width: 164px;
-  height: 20px;
-  margin-bottom: var(--space-3);
 }
 .poster-skeleton .skeleton-line {
   width: 104px;
@@ -487,7 +471,7 @@ header > div {
   margin-top: 3px;
 }
 .page-pad {
-  padding: 78px var(--prototype-gutter) 100px;
+  padding: var(--space-8) var(--prototype-gutter) 100px;
 }
 .page-pad h1 {
   font-size: var(--type-display-size);
@@ -572,7 +556,7 @@ header > div {
 }
 .scene-player > [aria-label="Silenciar"],
 .scene-player > [aria-label="Ativar som"] {
-  top: 76px;
+  top: var(--space-6);
   right: var(--prototype-gutter);
 }
 .scene-player [role="progressbar"] {
@@ -598,7 +582,7 @@ header > div {
 .scene-sequence {
   position: absolute;
   z-index: 4;
-  top: 78px;
+  top: calc(var(--space-6) + 2px);
   left: var(--prototype-gutter);
   display: flex;
   gap: var(--space-1);

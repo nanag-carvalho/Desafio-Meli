@@ -40,4 +40,4 @@ Os critérios são de compreensão e comportamento observável em walkthrough; n
 - [Mapa de decisões e wireflow editável no Figma](https://www.figma.com/design/v542kEZserQ1CoRFkdFfVI/Mercado-Livre---Desafio?node-id=152-206)
 - [Sitemap e flowmap no Figma](https://www.figma.com/design/v542kEZserQ1CoRFkdFfVI/Mercado-Livre---Desafio?node-id=29-281)
 - [User journey no Figma](https://www.figma.com/design/v542kEZserQ1CoRFkdFfVI/Mercado-Livre---Desafio?node-id=29-282)
-- [Wireflow clicável](http://127.0.0.1:8765/15-wireflow-clicavel.html)
+- [Wireflow clicável](http://127.0.0.1:8765/wireflow.html)

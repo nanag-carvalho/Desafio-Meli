@@ -1,4 +1,13 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/09-plano-ate-terca", "destination": "/", "permanent": true },
+    { "source": "/10-documentacao", "destination": "/raciocinio-de-design", "permanent": true },
+    { "source": "/15-wireflow-clicavel", "destination": "/wireflow", "permanent": true },
+    { "source": "/16-prototipo-final", "destination": "/alta/dist/", "permanent": true },
+    { "source": "/22-arvore-de-oportunidades", "destination": "/arvore-de-oportunidades", "permanent": true },
+    { "source": "/25-figma-wireflow-gallery", "destination": "/wireflow", "permanent": true },
+    { "source": "/26-relatorio-revisao", "destination": "/registro-de-iteracoes", "permanent": true }
+  ]
 }

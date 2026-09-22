@@ -1,34 +1,60 @@
-# Mercado Play · Case de Product Design
+# Mercado Play — case de Product Design
 
-Case completo de Product Design que conecta descoberta, escolha, contribuição e acesso no Mercado Play.
+Estudo de um desafio de produto sobre **recomendações de filmes e séries entre amigos e familiares**. A proposta conecta descoberta, avaliação, indicação e acesso ao título em uma experiência navegável. As hipóteses e decisões estão documentadas; os resultados ainda precisam de teste com participantes.
 
-## Ponto de entrada
+**Case publicado:** [desafio-meli.vercel.app](https://desafio-meli.vercel.app/)
 
-Abra `index.html`. Esta é a página preparada para avaliação e publicação.
+**Figma:** [arquivo de design](https://www.figma.com/design/v542kEZserQ1CoRFkdFfVI/Mercado-Livre---Desafio?node-id=213-1215)
 
-**Produção:** https://desafio-meli.vercel.app/
+## Entregáveis
 
-- Protótipo em alta: https://desafio-meli.vercel.app/alta/dist/
-- Mini Design System: https://desafio-meli.vercel.app/alta/dist/ds
+| Artefato | Conteúdo |
+| --- | --- |
+| [Case](index.html) | Contexto, problema, evidências, hipóteses, processo e proposta |
+| [Árvore de oportunidades](arvore-de-oportunidades.html) | Oportunidades, hipóteses H1–H8 e critérios de avaliação |
+| [Raciocínio de design](raciocinio-de-design.html) | Recorte, decisões e limites da evidência |
+| [Wireflow](wireflow.html) | Percursos clicáveis e retornos entre telas |
+| [Registro de iterações](registro-de-iteracoes.html) | Revisões aplicadas ao desenho e ao protótipo |
+| [Protótipo em alta fidelidade](alta/dist/index.html) | Experiência navegável, estados e interações |
+| [Design System](alta/dist/ds.html) | Tokens, componentes e composições usados no protótipo |
 
-## Artefatos
+**Wireframe** representa a estrutura de uma tela. **Wireflow** liga telas e estados para mostrar como alguém avança, volta e conclui uma tarefa. O arquivo clicável deste repositório é um wireflow.
 
-- `index.html` — narrativa completa do case
-- `22-arvore-de-oportunidades.html` — árvore detalhada
-- `10-documentacao.html` — decisões e limites da evidência
-- `15-wireflow-clicavel.html?mode=concept` — wireflow conceitual
-- `26-relatorio-revisao.html` — registro de achados
-- `alta/dist/index.html` — protótipo em alta fidelidade
-- `alta/dist/ds.html` — documentação do Design System
+## Organização do repositório
+
+```text
+index.html                    Case principal
+arvore-de-oportunidades.html  Estratégia e hipóteses
+raciocinio-de-design.html     Decisões e escopo
+wireflow.html                 Fluxo clicável
+registro-de-iteracoes.html    Revisões do trabalho
+alta/src/                    Código fonte do protótipo e Design System
+alta/dist/                   Versão estática publicada do protótipo
+assets/                      Imagens, marca e estilos do case
+docs/                        Pesquisa, processo e auditorias
+docs/archive/                Materiais anteriores preservados como histórico
+```
+
+Os antigos endereços numerados continuam disponíveis por redirecionamento na Vercel. Os nomes atuais são os endereços canônicos. O índice de documentos internos está em [docs/README.md](docs/README.md).
 
 ## Executar localmente
+
+Na raiz do repositório:
 
 ```bash
 python3 -m http.server 8765 --bind 127.0.0.1
 ```
 
-Depois, acesse `http://127.0.0.1:8765/`.
+Abra `http://127.0.0.1:8765/`. Para trabalhar no código React do protótipo:
 
-## Publicação
+```bash
+cd alta
+npm ci
+npm run dev
+```
 
-O projeto está publicado na Vercel a partir da raiz deste repositório.
+`alta/src/design-system/index.js` é a API de componentes usada pelas telas. `alta/dist/` contém a versão estática publicada. O site principal é HTML/CSS estático e a Vercel publica a raiz deste repositório.
+
+## Alcance da validação
+
+Os depoimentos e a queda de frequência citados no desafio são contexto fornecido no briefing. A revisão de interface e do fluxo foi feita pela autora; não houve teste com participantes externos nem medição de impacto no produto. Catálogo, preços, transações e colaboração são simulações para avaliar a experiência.
