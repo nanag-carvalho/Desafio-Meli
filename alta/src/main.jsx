@@ -26,6 +26,7 @@ import {
   Lock,
   MoreHorizontal,
   UserPlus,
+  ArrowLeft,
 } from "lucide-react";
 import "./globals.css";
 import "./styles.css";
@@ -327,20 +328,20 @@ function Rail({ title, children, reason, showAction = true, onAction }) {
 }
 
 function CatalogView({ title, items, open, close }) {
-  return createPortal(
-    <motion.section
+  return (
+    <motion.main
       className="catalog-view"
-      initial={{ y: "100%" }}
-      animate={{ y: 0 }}
-      exit={{ y: "100%" }}
-      transition={spring}
+      initial={{ opacity: 0, x: 12 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 12 }}
+      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
     >
       <div className="catalog-head">
         <AppHeader
           className="catalog-app-header"
           title={title}
           supporting={`${items.length} títulos disponíveis nesta seleção`}
-          actions={<IconButton label="Fechar" onClick={close}><X /></IconButton>}
+          leading={<IconButton label="Voltar" onClick={close}><ArrowLeft /></IconButton>}
         />
       </div>
       <div className="catalog-grid">
@@ -348,8 +349,7 @@ function CatalogView({ title, items, open, close }) {
           <Poster key={`${item.name}-${index}`} title={item} onOpen={open} />
         ))}
       </div>
-    </motion.section>,
-    document.querySelector(".device"),
+    </motion.main>
   );
 }
 
@@ -433,6 +433,16 @@ function HomePage({ open, onScene }) {
     filter === "Grátis" ? item.free :
     filter === "Novidades" ? item.fresh : item.kind === filter,
   );
+  if (showCatalog) {
+    return (
+      <CatalogView
+        title={filter === "Tudo" ? "Para você" : filter}
+        items={filteredCatalog}
+        open={open}
+        close={() => setShowCatalog(false)}
+      />
+    );
+  }
   return (
     <main>
       <div className="hero">
@@ -550,16 +560,6 @@ function HomePage({ open, onScene }) {
           />
         ))}
       </Rail>
-      <AnimatePresence>
-        {showCatalog ? (
-          <CatalogView
-            title={filter === "Tudo" ? "Para você" : filter}
-            items={filteredCatalog}
-            open={open}
-            close={() => setShowCatalog(false)}
-          />
-        ) : null}
-      </AnimatePresence>
     </main>
   );
 }
@@ -811,6 +811,16 @@ function StorePage({ open }) {
   );
   const openOffer = (title, layoutId) =>
     open({ ...title, access: `${title.offerType} por ${title.access}` }, layoutId);
+  if (showCatalog) {
+    return (
+      <CatalogView
+        title={filter === "Explorar" ? "Catálogo da Loja" : filter}
+        items={filtered}
+        open={openOffer}
+        close={() => setShowCatalog(false)}
+      />
+    );
+  }
   return (
     <main className="page-pad">
       <h1>Loja</h1>
@@ -853,9 +863,6 @@ function StorePage({ open }) {
           </p>
         </div>
       </div>
-      <AnimatePresence>
-        {showCatalog ? <CatalogView title={filter === "Explorar" ? "Catálogo da Loja" : filter} items={filtered} open={openOffer} close={() => setShowCatalog(false)} /> : null}
-      </AnimatePresence>
     </main>
   );
 }
@@ -871,6 +878,16 @@ function ProfilePage({ open }) {
     { value: "invite", icon: UserPlus, title: "Convidar pessoas", supporting: "Transforma em compartilhada" },
     { value: "privacy", icon: Lock, title: "Privacidade", supporting: "Privada ou compartilhada" },
   ];
+  if (selectedList) {
+    return (
+      <CatalogView
+        title={selectedList.name}
+        items={selectedList.items}
+        open={open}
+        close={() => setSelectedList(null)}
+      />
+    );
+  }
   return (
     <main className="page-pad profile-page">
       <div className="profile-head">
@@ -987,11 +1004,6 @@ function ProfilePage({ open }) {
         </div>
       </section>
       {shareTitle ? <ShareSheet title={shareTitle} close={() => setShareTitle(null)} /> : null}
-      <AnimatePresence>
-        {selectedList ? (
-          <CatalogView title={selectedList.name} items={selectedList.items} open={open} close={() => setSelectedList(null)} />
-        ) : null}
-      </AnimatePresence>
       <AnimatePresence>
         {creatingList ? <CreateListSheet close={() => setCreatingList(false)} onCreate={(list) => { setCreatedLists((current) => [...current, list]); setCreatingList(false); }} /> : null}
       </AnimatePresence>

@@ -20,3 +20,8 @@
 ## Próxima consolidação
 
 Transformar CommerceSheet em `PurchaseSheet` dentro de compositions, usando Sheet, Item, Button e estados padronizados.
+# Correções de fundação
+
+- `border` diferencia superfícies com baixo contraste, sem contornar cards em excesso.
+- `input` dá contorno perceptível aos controles sobre `background`, `card` e `popover`.
+- `ring` mantém foco em azul Mercado Livre, sem depender da cor da borda em repouso.
