@@ -485,17 +485,19 @@ function CatalogView({ title, items, open, close, collection, onUpdate, onDelete
                 <SheetDescription>Convide pessoas diretamente ou envie um link.</SheetDescription>
               </SheetHeader>
               <div className="member-manager">
-                <SectionHeader size="sm" level={3} title="Convidar pessoas" />
+                <p className="sheet-field-label">Convidar pessoas</p>
                 <InviteField aria-label="Nome ou e-mail" placeholder="Nome ou e-mail" value={newMember} onChange={(event) => setNewMember(event.target.value)} onInvite={addMember} />
-                <SectionHeader size="sm" level={3} title="Compartilhar convite" />
-                <ShareChannels copied={inviteCopied} onSelect={(channel) => channel === "copy" ? copyInvite() : shareInvite()} />
                 <div className="member-list" aria-label="Participantes da lista">
-                  <SectionHeader size="sm" level={3} title={`Participantes · ${memberCount}`} />
+                  <p className="sheet-field-label">Participantes <span>{memberCount}</span></p>
                   {(collection.members ?? ["NC"]).map((member, index) => (
                     <motion.div key={`${member}-${index}`} layout initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}>
                       <ParticipantRow initials={member} name={member === "NC" ? "Você" : member} owner={index === 0} onRemove={index === 0 ? undefined : () => applyUpdate({ ...collection, members: collection.members.filter((_, memberIndex) => memberIndex !== index) }, `${member} removido`)} />
                     </motion.div>
                   ))}
+                </div>
+                <div className="member-share-actions">
+                  <p className="sheet-field-label">Compartilhar convite</p>
+                  <ShareChannels copied={inviteCopied} onSelect={(channel) => channel === "copy" ? copyInvite() : shareInvite()} />
                 </div>
               </div>
             </SheetContent>
