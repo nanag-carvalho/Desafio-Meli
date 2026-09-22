@@ -14,7 +14,7 @@
   <body>
     <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
     <header class="site-header">
-      <a class="brand" href="#inicio" aria-label="Mercado Play case, voltar ao início"><span class="brand-mark" aria-hidden="true">↔</span>Mercado <strong>Play</strong></a>
+      <a class="brand" href="#inicio" aria-label="Mercado Play case, voltar ao início"><span class="brand-mark" aria-hidden="true"><img src="assets/brand/mercado-livre-handshake.svg" alt="" /></span>Mercado <strong>Play</strong></a>
       <nav aria-label="Navegação do case">
         <a href="#problema">Problema</a>
         <a href="#oportunidades">Oportunidades</a>
@@ -101,7 +101,7 @@
         <p class="evidence-caption"><strong>Rastreabilidade:</strong> esses contextos sintetizam falas e situações fornecidas no desafio, telas do produto e análise heurística. Não são apresentados como entrevistas conduzidas durante este case.</p>
       </section>
 
-      <section class="section pivot">
+      <section class="section pivot" id="mudanca-direcao">
         <div class="section-label">02 · Mudança de direção</div>
         <div class="section-grid">
           <div><h2>De “compartilhar um título” para sustentar a jornada de decisão.</h2></div>
@@ -111,6 +111,18 @@
           <article><span>Direção inicial</span><h3>Facilitar a recomendação</h3><p>O fluxo começava quando alguém já sabia o que indicar.</p></article>
           <div class="pivot-arrow" aria-hidden="true">→</div>
           <article class="after"><span>Direção atual</span><h3>Reduzir o esforço da decisão</h3><p>Descoberta, confiança, contribuição e acesso formam uma experiência contínua.</p></article>
+        </div>
+        <div class="pivot-craft" aria-label="Evolução visual do recorte da solução">
+          <figure>
+            <div class="pivot-craft-label">Recorte inicial · ação isolada</div>
+            <img src="assets/case/pivot-indicar.png" alt="Sheet de indicação aberto no detalhe de um título" loading="lazy" />
+            <figcaption>A indicação resolvia o envio, mas começava tarde: a pessoa já precisava ter escolhido o título.</figcaption>
+          </figure>
+          <figure>
+            <div class="pivot-craft-label">Recorte ampliado · jornada de decisão</div>
+            <img src="assets/case/pivot-wireflow.png" alt="Wireflow com as entradas Início, Buscar e Em cena" loading="lazy" />
+            <figcaption>O wireflow passou a testar três entradas para a escolha e conectou descoberta, detalhe, contribuição e acesso.</figcaption>
+          </figure>
         </div>
       </section>
 
@@ -204,23 +216,9 @@
           <div class="prose"><p>O protótipo simula descoberta, catálogo, prévias, detalhe, favoritos, avaliação, criação e gestão de listas, indicação e acesso. Os títulos e transações são fictícios.</p><a class="text-link" href="alta/dist/">Abrir em tela cheia <span aria-hidden="true">↗</span></a></div>
         </div>
         <div class="prototype-stage">
-          <iframe src="alta/dist/" title="Protótipo navegável do Mercado Play" loading="lazy"></iframe>
-          <aside>
-            <span class="status-badge">Guia de validação</span>
-            <h3>Escopo representado</h3>
-            <p>Descoberta, detalhe, contribuição, colaboração e acesso comercial em uma experiência simulada.</p>
-            <h3>Percursos para revisar</h3>
-            <ol>
-              <li>Escolha um título a partir do Início.</li>
-              <li>Explore um vídeo em Em cena.</li>
-              <li>Avalie, favorite ou indique no detalhe.</li>
-              <li>Crie uma lista e gerencie participantes.</li>
-              <li>Compare conteúdo incluído e aluguel.</li>
-            </ol>
-            <h3>O que observar</h3>
-            <ul><li>Primeiro caminho e desvios.</li><li>Diferença entre favorito, avaliação e lista.</li><li>Compreensão de privacidade, preço e disponibilidade.</li></ul>
-            <p><strong>Limite:</strong> títulos, transações e recomendações são simulados. Use rolagem e drag como em uma interface mobile.</p>
-          </aside>
+          <div class="prototype-embed">
+            <iframe src="alta/dist/?embed=case" title="Protótipo navegável do Mercado Play" loading="lazy" scrolling="no"></iframe>
+          </div>
         </div>
       </section>
 
@@ -254,9 +252,30 @@
           <article><span>04 · Código com IA</span><strong>Sistema → protótipo</strong><p>shadcn, Radix e Motion foram customizados pelo mesmo vocabulário do Figma.</p></article>
           <article><span>05 · Revisão</span><strong>Protótipo → aprendizado</strong><p>Heurísticas e achados voltaram para hipóteses, wireflow, DS e interface.</p></article>
         </div>
-        <div class="design-engineering-note">
-          <span>Transição profissional</span>
-          <div><h3>De Product Designer para Product Design Engineer.</h3><p>Sincronizar intenção, Figma, componentes e código permite testar ideias rapidamente, preparar estudos com usuários e evoluir uma biblioteca sem perder consistência. O valor não está em gerar mais telas; está em construir exatamente o comportamento definido e torná-lo fácil de revisar.</p></div>
+        <div class="figma-showcase" id="figma-file">
+          <div class="figma-showcase-head">
+            <div>
+              <span>Figma · fonte de design</span>
+              <h3>Style guide, tokens e componentes no arquivo de trabalho.</h3>
+              <p>O Figma registra as decisões visuais e o comportamento dos componentes antes de chegarem ao código. O mesmo vocabulário orienta o Design System e o protótipo.</p>
+            </div>
+            <a class="button secondary" href="https://www.figma.com/design/v542kEZserQ1CoRFkdFfVI/Mercado-Livre---Desafio?node-id=59-431&amp;t=mYbqKg24x6sQ4iqh-1" target="_blank" rel="noreferrer">Abrir no Figma <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="figma-preview">
+            <figure>
+              <img src="assets/case/figma-workfile-overview.png" alt="Visão geral do arquivo de trabalho no Figma, com fundamentos, wireflow, interface e documentação" loading="lazy">
+              <figcaption>Prévia do arquivo de trabalho: decisões, wireflow, componentes e telas de alta reunidos no mesmo sistema.</figcaption>
+            </figure>
+            <div class="figma-preview-copy">
+              <span>VISUALIZAÇÃO INCORPORADA</span>
+              <h4>Inspecione o arquivo sem perder o contexto do case.</h4>
+              <p>O Figma pode solicitar login conforme a permissão da conta. A prévia permanece visível e o arquivo completo abre no ponto do Style Guide.</p>
+              <details>
+                <summary>Carregar Figma nesta página</summary>
+                <iframe src="https://embed.figma.com/design/v542kEZserQ1CoRFkdFfVI/Mercado-Livre---Desafio?node-id=59-431&amp;embed-host=share" title="Style guide e componentes do Mercado Play no Figma" loading="lazy" allowfullscreen></iframe>
+              </details>
+            </div>
+          </div>
         </div>
       </section>
 

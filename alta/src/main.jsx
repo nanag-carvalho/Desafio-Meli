@@ -29,7 +29,6 @@ import {
   ArrowLeft,
   Pencil,
   Trash2,
-  Handshake,
 } from "lucide-react";
 import "./globals.css";
 import "./styles.css";
@@ -581,7 +580,7 @@ function Header({ onProfile }) {
   return (
     <header>
       <b className="product-brand">
-        <span className="product-brand-mark" aria-hidden="true"><Handshake /></span>
+        <span className="product-brand-mark" aria-hidden="true"><img src="./assets/mercado-livre-handshake.svg" alt="" /></span>
         <span>Mercado <i>Play</i></span>
       </b>
       <div>
@@ -1624,6 +1623,7 @@ function App() {
   const [detail, setDetail] = useState(null);
   const [secondaryLevel, setSecondaryLevel] = useState(false);
   const [secondaryPending, setSecondaryPending] = useState(false);
+  const [guidedFlow, setGuidedFlow] = useState("choose");
   const timerRef = useRef(null);
   const secondaryTimerRef = useRef(null);
   const reduceMotion = useReducedMotion();
@@ -1670,6 +1670,25 @@ function App() {
   };
 
   const openTitle = (title, sourceId) => setDetail({ title, sourceId });
+  const guidedFlows = [
+    { id: "choose", hypothesis: "H1–H2", title: "Encontrar sem saber o nome", supporting: "Busca por pista e curadoria", page: "search" },
+    { id: "scene", hypothesis: "H3", title: "Decidir por uma prévia", supporting: "Feed vertical em Em cena", page: "scene" },
+    { id: "contribute", hypothesis: "H4–H5", title: "Guardar, avaliar ou indicar", supporting: "Ações distintas no detalhe", page: "home", detail: true },
+    { id: "collaborate", hypothesis: "H6", title: "Construir uma lista junto", supporting: "Listas e participantes em Minha área", page: "profile" },
+    { id: "access", hypothesis: "H7–H8", title: "Entender preço e acesso", supporting: "Loja, oferta e próximo passo", page: "store" },
+  ];
+  const startGuidedFlow = (flow) => {
+    setGuidedFlow(flow.id);
+    setDetail(null);
+    navigate(flow.page);
+    if (flow.detail) {
+      window.setTimeout(
+        () => setDetail({ title: titles[0], sourceId: "guided-detail" }),
+        reduceMotion ? 100 : 440,
+      );
+    }
+    toast.info(`${flow.hypothesis} · ${flow.title}`);
+  };
   const renderPage = () =>
     page === "home" ? (
       <HomePage open={openTitle} onScene={() => navigate("scene")} onDepthChange={changeDepth} />
@@ -1727,21 +1746,28 @@ function App() {
         <Toaster />
       </div>
       <aside className="notes">
-        <Badge tone="brand">GUIA DE VALIDAÇÃO</Badge>
-        <h2>O que este protótipo cobre</h2>
-        <div className="validation-scope">
-          <span>Escolher</span><p>Início, busca por pista e prévias em Em cena.</p>
-          <span>Contribuir</span><p>Favoritar, avaliar, organizar em listas e indicar.</p>
-          <span>Acessar</span><p>Conteúdo incluído, aluguel e próximo passo visíveis.</p>
+        <Badge tone="brand">EXPLORAÇÃO GUIADA</Badge>
+        <h2>Abra os fluxos ligados às hipóteses</h2>
+        <p className="guide-intro">Use os atalhos para chegar aos principais comportamentos. A navegação continua livre dentro do protótipo.</p>
+        <div className="guided-flows">
+          {guidedFlows.map((flow, index) => (
+            <button
+              key={flow.id}
+              type="button"
+              data-active={guidedFlow === flow.id || undefined}
+              onClick={() => startGuidedFlow(flow)}
+            >
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div>
+                <small>{flow.hypothesis}</small>
+                <strong>{flow.title}</strong>
+                <em>{flow.supporting}</em>
+              </div>
+              <ChevronRight />
+            </button>
+          ))}
         </div>
-        <h3>Percursos para revisar</h3>
-        <ol className="validation-paths">
-          <li>Encontre um título sem saber o nome.</li>
-          <li>Diferencie favorito, avaliação e lista.</li>
-          <li>Crie uma lista e convide uma pessoa.</li>
-          <li>Explique preço e disponibilidade.</li>
-        </ol>
-        <h3>Observe</h3>
+        <h3>Observe durante o percurso</h3>
         <p>Primeiro caminho, desvios, retornos, feedback percebido e termos que geram dúvida.</p>
         <small><strong>Limite:</strong> títulos, transações, sincronização e recomendação são simulados.</small>
       </aside>
