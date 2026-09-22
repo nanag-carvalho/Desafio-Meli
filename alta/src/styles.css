@@ -863,6 +863,7 @@ header > div {
   border-radius: var(--radius-lg);
   background: var(--card);
   padding-inline: var(--space-3);
+  text-decoration: none;
 }
 .profile-head h1,
 .profile-head p {

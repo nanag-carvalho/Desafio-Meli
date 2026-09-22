@@ -1102,7 +1102,9 @@ function ProfilePage({ open, onDepthChange }) {
         title="Meli+ e assinatura"
         supporting="Consulte planos e benefícios no Mercado Livre"
         disclosure
-        onClick={() => window.open("https://www.mercadolivre.com.br/assinaturas/melimais", "_blank", "noopener,noreferrer")}
+        href="https://www.mercadolivre.com.br/assinaturas/melimais"
+        target="_blank"
+        rel="noopener noreferrer"
       />
 
       <section className="rail-section favorite-rail">

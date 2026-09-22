@@ -13,10 +13,13 @@ function Item({
   selected = false,
   disclosure = false,
   variant = "default",
+  href,
+  target,
+  rel,
   onClick,
   ...props
 }) {
-  const Comp = onClick || selectable ? "button" : "div";
+  const Comp = href ? "a" : onClick || selectable ? "button" : "div";
   return (
     <Comp
       data-slot="item"
@@ -29,6 +32,9 @@ function Item({
         className,
       )}
       onClick={onClick}
+      href={href}
+      target={target}
+      rel={rel}
       {...props}
     >
       {thumbnail && (
