@@ -35,6 +35,9 @@
 @media(max-width:900px){.evidence-trace{grid-template-columns:1fr}.wireflow-usage{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.wireflow-map,.wireflow-usage,.process-loop{grid-template-columns:1fr}.process-loop article{min-height:auto}.brand-mark{width:28px;height:28px}}
 
+/* Capa do case: título legível sem fragmentar a frase em muitas linhas. */
+@media(min-width:621px){.hero{align-items:center;padding-top:72px}.hero h1{max-width:820px;font-size:clamp(3.6rem,5.2vw,5.4rem);line-height:1.03;letter-spacing:-.06em}}
+
 /* Embedded Figma source and single prototype validation surface */
 .figma-showcase{margin-top:16px;border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;background:var(--surface)}
 .figma-showcase-head{display:flex;align-items:flex-end;justify-content:space-between;gap:32px;padding:24px}
