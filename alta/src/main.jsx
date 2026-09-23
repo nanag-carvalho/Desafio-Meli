@@ -156,26 +156,9 @@ const topSeries = rankingCatalog(
   ],
   "Série",
 );
-const listOptions = [
-  {
-    value: "watchlist",
-    icon: ListVideo,
-    title: "Quero assistir",
-    supporting: "Lista privada",
-  },
-  {
-    value: "family",
-    icon: Users,
-    title: "Noite em família",
-    supporting: "Lista compartilhada · 3 pessoas",
-  },
-  {
-    value: "new",
-    icon: Plus,
-    title: "Criar nova lista",
-    supporting: "Privada ou compartilhada",
-    disclosure: true,
-  },
+const initialLists = [
+  { id: "watch", name: "Quero assistir", type: "Privada", items: catalog.slice(3, 9) },
+  { id: "family", name: "Noite em família", type: "Compartilhada", members: ["NC", "RA", "LM"], items: catalog.slice(2, 7) },
 ];
 const spring = { type: "spring", stiffness: 420, damping: 32 };
 const pageOrder = ["home", "store", "scene", "search", "profile"];
@@ -552,10 +535,54 @@ function CreateListSheet({ close, onCreate }) {
           </div>
         </div>
         <SheetFooter>
-          <Button disabled={!name.trim()} onClick={() => onCreate({ name: name.trim(), type: privacy, count: 0 })}>Criar lista</Button>
+          <Button disabled={!name.trim()} onClick={() => onCreate({ name: name.trim(), type: privacy })}>Criar lista</Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>
+  );
+}
+function ListPicker({ title, lists, onToggle, onCreateList, trigger }) {
+  const [creatingList, setCreatingList] = useState(false);
+  const options = [
+    ...lists.map((list) => ({
+      value: list.id,
+      icon: list.type === "Compartilhada" ? Users : ListVideo,
+      title: list.name,
+      supporting: list.type,
+      selectable: true,
+      selected: list.items.some((item) => item.name === title.name),
+      keepOpen: true,
+      onSelect: () => onToggle(title, list.id),
+    })),
+    {
+      value: "new",
+      icon: Plus,
+      title: "Criar nova lista",
+      supporting: "Escolha nome e privacidade",
+      disclosure: true,
+      onSelect: () => setCreatingList(true),
+    },
+  ];
+
+  return (
+    <>
+      <OptionsSheet
+        withinContext
+        title="Adicionar à lista"
+        description={`Escolha onde guardar ${title.name}.`}
+        options={options}
+        trigger={trigger}
+      />
+      {creatingList ? (
+        <CreateListSheet
+          close={() => setCreatingList(false)}
+          onCreate={(list) => {
+            onCreateList(list, title);
+            setCreatingList(false);
+          }}
+        />
+      ) : null}
+    </>
   );
 }
 function Header({ onProfile }) {
@@ -597,11 +624,11 @@ function Nav({ page, setPage }) {
     </nav>
   );
 }
-function HomePage({ open, onScene, onDepthChange }) {
+function HomePage({ open, onScene, onDepthChange, lists, onToggleList, onCreateList }) {
   const [filter, setFilter] = useState("Tudo");
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [showCatalog, setShowCatalog] = useState(false);
-  const [heroSaved, setHeroSaved] = useState(false);
+  const heroSaved = lists.some((list) => list.items.some((item) => item.name === titles[0].name));
   const filteredCatalog = catalog.filter((item) =>
     filter === "Tudo" ? true :
     filter === "Grátis" ? item.free :
@@ -646,13 +673,17 @@ function HomePage({ open, onScene, onDepthChange }) {
             >
               Assistir
             </Button>
-            <Button
-              variant="glass"
-              icon={heroSaved ? Check : Plus}
-              onClick={() => setHeroSaved((value) => !value)}
-            >
-              {heroSaved ? "Na minha lista" : "Minha lista"}
-            </Button>
+            <ListPicker
+              title={titles[0]}
+              lists={lists}
+              onToggle={onToggleList}
+              onCreateList={onCreateList}
+              trigger={
+                <Button variant="glass" icon={heroSaved ? Check : Plus}>
+                  {heroSaved ? "Minhas listas" : "Minha lista"}
+                </Button>
+              }
+            />
           </div>
         </div>
       </div>
@@ -805,13 +836,12 @@ function SearchPage({ open }) {
     </main>
   );
 }
-function ScenePage({ open }) {
+function ScenePage({ open, lists, onToggleList, onCreateList }) {
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [muted, setMuted] = useState(true);
   const [progress, setProgress] = useState(6);
   const [favorites, setFavorites] = useState(() => new Set());
-  const [saved, setSaved] = useState(() => new Set());
   const [shareTitle, setShareTitle] = useState(null);
   const feedDrag = useDragScroll(false, "y");
 
@@ -849,14 +879,6 @@ function ScenePage({ open }) {
       return next;
     });
 
-  const listOptionsFor = (title) =>
-    listOptions.map((option) => ({
-      ...option,
-      selectable: true,
-      selected: saved.has(title.name) && option.value === "watchlist",
-      onSelect: () => toggleInSet(setSaved, title.name),
-    }));
-
   return (
     <main
       className="scene-feed"
@@ -874,7 +896,7 @@ function ScenePage({ open }) {
       {titles.map((title, itemIndex) => {
         const active = itemIndex === index;
         const isFavorite = favorites.has(title.name);
-        const isSaved = saved.has(title.name);
+        const isSaved = lists.some((list) => list.items.some((item) => item.name === title.name));
         return (
           <section
             className="scene"
@@ -892,6 +914,7 @@ function ScenePage({ open }) {
             muted={muted}
             onPlayingChange={(value) => active && setPlaying(value)}
             onMutedChange={setMuted}
+            onProgressChange={(value) => active && setProgress(value)}
           />
             <div className="scene-gradient" />
             <div
@@ -909,11 +932,11 @@ function ScenePage({ open }) {
             </div>
             <div className="scene-actions">
               <div className="scene-action">
-                <OptionsSheet
-                  withinContext
-                  title="Adicionar à lista"
-                  description="Escolha onde guardar este título."
-                  options={listOptionsFor(title)}
+                <ListPicker
+                  title={title}
+                  lists={lists}
+                  onToggle={onToggleList}
+                  onCreateList={onCreateList}
                   trigger={
                     <IconButton
                       label={isSaved ? "Na lista" : "Adicionar à lista"}
@@ -954,12 +977,6 @@ function ScenePage({ open }) {
               <Badge tone="brand">{title.access}</Badge>
               <h1>{title.name}</h1>
               <p>{title.reason}</p>
-              <div className="scene-status">
-                <span>{active && playing ? "Reproduzindo" : "Pausado"}</span>
-                <span>
-                  Prévia · {Math.max(1, Math.ceil((100 - (active ? progress : 0)) * 0.32))}s
-                </span>
-              </div>
               <small className="scene-hint">Arraste para cima para a próxima</small>
             </div>
           </section>
@@ -1040,19 +1057,23 @@ function StorePage({ open, onDepthChange }) {
   );
 }
 
-function ProfilePage({ open, onDepthChange }) {
+function ProfilePage({ open, onDepthChange, lists, onListsChange, onCreateList, guidedListRequest }) {
   const [historyFilter, setHistoryFilter] = useState("Todos");
   const [viewingFavorites, setViewingFavorites] = useState(false);
   const [shareTitle, setShareTitle] = useState(null);
-  const [lists, setLists] = useState([
-    { id: "watch", name: "Quero assistir", type: "Privada", count: 12, items: catalog.slice(0, 6) },
-    { id: "family", name: "Noite em família", type: "Compartilhada", count: 5, members: ["NC", "RA", "LM"], items: catalog.slice(2, 7) },
-  ]);
   const [selectedList, setSelectedList] = useState(null);
   const [creatingList, setCreatingList] = useState(false);
+  useEffect(() => {
+    if (!guidedListRequest) return;
+    const list = lists.find((item) => item.id === guidedListRequest.id);
+    if (!list) return;
+    setViewingFavorites(false);
+    setSelectedList(list);
+    onDepthChange(true);
+  }, [guidedListRequest]);
   const notifyProfile = (message) => toast.success(message);
   const updateList = (updated) => {
-    setLists((current) => current.map((list) => list.id === updated.id ? updated : list));
+    onListsChange((current) => current.map((list) => list.id === updated.id ? updated : list));
     setSelectedList((current) => current?.id === updated.id ? updated : current);
   };
   const openList = (list) => { setSelectedList(list); onDepthChange(true); };
@@ -1070,7 +1091,7 @@ function ProfilePage({ open, onDepthChange }) {
         collection={selectedList}
         onUpdate={updateList}
         onFeedback={notifyProfile}
-        onDelete={(listToDelete) => { setLists((current) => current.filter((list) => list.id !== listToDelete.id)); setSelectedList(null); onDepthChange(false); }}
+        onDelete={(listToDelete) => { onListsChange((current) => current.filter((list) => list.id !== listToDelete.id)); setSelectedList(null); onDepthChange(false); }}
         close={() => { setSelectedList(null); onDepthChange(false); }}
       />
     );
@@ -1140,7 +1161,7 @@ function ProfilePage({ open, onDepthChange }) {
         <div className="profile-lists">
           {lists.map((list) => (
             <div className="list-item" key={list.name}>
-              <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => openList(list)}>{list.type === "Compartilhada" ? <Users /> : <Lock />}<span><strong>{list.name}</strong><small>{list.type === "Compartilhada" ? `${list.members?.length ?? 1} pessoas` : "Privada"} · {list.count} títulos</small></span></motion.button>
+              <motion.button className="list-item-main" whileTap={{ scale: 0.98 }} onClick={() => openList(list)}>{list.type === "Compartilhada" ? <Users /> : <Lock />}<span><strong>{list.name}</strong><small>{list.type === "Compartilhada" ? `${list.members?.length ?? 1} pessoas` : "Privada"} · {list.items.length} títulos</small></span></motion.button>
               <OptionsSheet withinContext title="Opções da lista" description={list.name} options={listMenu(list)} trigger={<IconButton label={`Opções de ${list.name}`}><MoreHorizontal /></IconButton>} />
             </div>
           ))}
@@ -1188,17 +1209,17 @@ function ProfilePage({ open, onDepthChange }) {
       </section>
       {shareTitle ? <ShareSheet title={shareTitle} close={() => setShareTitle(null)} /> : null}
       <AnimatePresence>
-        {creatingList ? <CreateListSheet close={() => setCreatingList(false)} onCreate={(list) => { setLists((current) => [...current, { ...list, id: `list-${Date.now()}`, items: [], members: list.type === "Compartilhada" ? ["NC"] : undefined }]); setCreatingList(false); }} /> : null}
+        {creatingList ? <CreateListSheet close={() => setCreatingList(false)} onCreate={(list) => { onCreateList(list); setCreatingList(false); }} /> : null}
       </AnimatePresence>
     </main>
   );
 }
 
-function Detail({ title, sourceId, onClose }) {
+function Detail({ title, sourceId, onClose, lists, onToggleList, onCreateList }) {
   const [liked, setLiked] = useState(false),
     [share, setShare] = useState(false),
-    [offer, setOffer] = useState(false),
-    [savedList, setSavedList] = useState(null);
+    [offer, setOffer] = useState(false);
+  const isSaved = lists.some((list) => list.items.some((item) => item.name === title.name));
   const dragScroll = useDragScroll();
   return (
     <Dialog.Root open onOpenChange={(v) => !v && onClose()}>
@@ -1263,17 +1284,12 @@ function Detail({ title, sourceId, onClose }) {
                 : "Ver oferta"}
             </Button>
             <div className="quick">
-              <OptionsSheet
-                withinContext
-                title="Adicionar à lista"
-                description="Escolha onde guardar este título."
-                options={listOptions.map((option) => ({
-                  ...option,
-                  selectable: option.value !== "new",
-                  selected: savedList === option.value,
-                  onSelect: () => option.value !== "new" && setSavedList(option.value),
-                }))}
-                trigger={<ActionTile icon={savedList ? Check : Plus} label={savedList ? "Na lista" : "Lista"} active={Boolean(savedList)} />}
+              <ListPicker
+                title={title}
+                lists={lists}
+                onToggle={onToggleList}
+                onCreateList={onCreateList}
+                trigger={<ActionTile icon={isSaved ? Check : Plus} label={isSaved ? "Na lista" : "Lista"} active={isSaved} />}
               />
               <RatingAction withinContext />
               <ActionTile
@@ -1611,11 +1627,13 @@ function DSPreview() {
 
 function App() {
   const [page, setPage] = useState("home");
+  const [lists, setLists] = useState(initialLists);
   const [direction, setDirection] = useState(1);
   const [detail, setDetail] = useState(null);
   const [secondaryLevel, setSecondaryLevel] = useState(false);
   const [secondaryPending, setSecondaryPending] = useState(false);
   const [guidedFlow, setGuidedFlow] = useState("choose");
+  const [guidedListRequest, setGuidedListRequest] = useState(null);
   const secondaryTimerRef = useRef(null);
   const reduceMotion = useReducedMotion();
   const viewportDrag = useDragScroll(page === "scene");
@@ -1640,11 +1658,11 @@ function App() {
   };
 
   const navigate = (nextPage) => {
-    if (nextPage === page) return;
     window.clearTimeout(secondaryTimerRef.current);
     setSecondaryLevel(false);
     setSecondaryPending(false);
     viewportDrag.ref.current?.scrollTo({ top: 0, behavior: "auto" });
+    if (nextPage === page) return;
     setDirection(
       pageOrder.indexOf(nextPage) > pageOrder.indexOf(page) ? 1 : -1,
     );
@@ -1652,6 +1670,27 @@ function App() {
   };
 
   const openTitle = (title, sourceId) => setDetail({ title, sourceId });
+  const toggleTitleInList = (title, listId) => {
+    const list = lists.find((item) => item.id === listId);
+    if (!list) return;
+    const saved = list.items.some((item) => item.name === title.name);
+    setLists((current) => current.map((item) => item.id === listId ? {
+      ...item,
+      items: saved
+        ? item.items.filter((entry) => entry.name !== title.name)
+        : [...item.items, title],
+    } : item));
+    toast.success(saved ? `Removido de ${list.name}` : `Adicionado a ${list.name}`);
+  };
+  const createList = (list, title) => {
+    setLists((current) => [...current, {
+      ...list,
+      id: `list-${Date.now()}`,
+      items: title ? [title] : [],
+      members: list.type === "Compartilhada" ? ["NC"] : undefined,
+    }]);
+    toast.success(title ? `${title.name} adicionado a ${list.name}` : `Lista ${list.name} criada`);
+  };
   const guidedFlows = [
     { id: "choose", hypothesis: "H1–H2", title: "Encontrar sem saber o nome", supporting: "Busca por pista e curadoria", page: "search" },
     { id: "scene", hypothesis: "H3", title: "Decidir por uma prévia", supporting: "Feed vertical em Em cena", page: "scene" },
@@ -1662,6 +1701,7 @@ function App() {
   const startGuidedFlow = (flow) => {
     setGuidedFlow(flow.id);
     setDetail(null);
+    setGuidedListRequest(flow.id === "collaborate" ? { id: "family", time: Date.now() } : null);
     navigate(flow.page);
     if (flow.detail) {
       window.setTimeout(
@@ -1673,15 +1713,15 @@ function App() {
   };
   const renderPage = () =>
     page === "home" ? (
-      <HomePage open={openTitle} onScene={() => navigate("scene")} onDepthChange={changeDepth} />
+      <HomePage open={openTitle} onScene={() => navigate("scene")} onDepthChange={changeDepth} lists={lists} onToggleList={toggleTitleInList} onCreateList={createList} />
     ) : page === "search" ? (
       <SearchPage open={openTitle} />
     ) : page === "scene" ? (
-      <ScenePage open={openTitle} />
+      <ScenePage open={openTitle} lists={lists} onToggleList={toggleTitleInList} onCreateList={createList} />
     ) : page === "store" ? (
       <StorePage open={openTitle} onDepthChange={changeDepth} />
     ) : (
-      <ProfilePage open={openTitle} onDepthChange={changeDepth} />
+      <ProfilePage open={openTitle} onDepthChange={changeDepth} lists={lists} onListsChange={setLists} onCreateList={createList} guidedListRequest={guidedListRequest} />
     );
 
   return (
@@ -1715,6 +1755,9 @@ function App() {
               title={detail.title}
               sourceId={detail.sourceId}
               onClose={() => setDetail(null)}
+              lists={lists}
+              onToggleList={toggleTitleInList}
+              onCreateList={createList}
             />
           )}
         </AnimatePresence>

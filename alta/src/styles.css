@@ -559,11 +559,8 @@ header > div {
   top: var(--space-6);
   right: var(--prototype-gutter);
 }
-.scene-player [role="progressbar"] {
-  z-index: 3;
-  right: var(--prototype-gutter);
-  bottom: 84px;
-  left: var(--prototype-gutter);
+.scene-player [data-slot="media-controls"] {
+  z-index: 5;
 }
 @keyframes scene-camera {
   from {
@@ -625,7 +622,7 @@ header > div {
 .scene-copy {
   position: absolute;
   z-index: 3;
-  bottom: 102px;
+  bottom: 146px;
   left: var(--prototype-gutter);
   right: 86px;
 }

@@ -14,6 +14,7 @@ function MediaPlayer({
   onPlayingChange,
   onMutedChange,
   onProgressChange,
+  durationSeconds = 32,
 }) {
   const playerRef = React.useRef(null);
   const [internalPlaying, setInternalPlaying] = React.useState(false);
@@ -23,6 +24,8 @@ function MediaPlayer({
   const playing = controlledPlaying ?? internalPlaying;
   const muted = controlledMuted ?? internalMuted;
   const currentProgress = onProgressChange ? progress : internalProgress;
+  const formatTime = (seconds) => `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+  const elapsed = Math.round((currentProgress / 100) * durationSeconds);
 
   React.useEffect(() => setInternalProgress(progress), [progress]);
   React.useEffect(() => {
@@ -145,8 +148,14 @@ function MediaPlayer({
           >
             {muted ? <VolumeX /> : <Volume2 />}
           </Button>
-          <div className="absolute inset-x-3 bottom-3 flex items-center">
+          <div data-slot="media-controls" className="absolute inset-x-4 bottom-[84px] z-10 flex h-9 items-center gap-2 rounded-full border border-[var(--glass-border)] bg-[var(--glass-background)] px-2 backdrop-blur-[var(--glass-blur)]">
+            <Button size="icon-xs" variant="ghost" className="shrink-0 rounded-full" onClick={() => setPlaying((value) => !value)} aria-label={playing ? "Pausar prévia" : "Reproduzir prévia"}>
+              {playing ? <Pause /> : <Play fill="currentColor" />}
+            </Button>
             {progressControl}
+            <span className="shrink-0 text-[11px] tabular-nums text-white" aria-label={`${formatTime(elapsed)} de ${formatTime(durationSeconds)}`}>
+              {formatTime(elapsed)} / {formatTime(durationSeconds)}
+            </span>
           </div>
         </>
       )}
